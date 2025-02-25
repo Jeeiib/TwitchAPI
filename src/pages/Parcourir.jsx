@@ -8,33 +8,35 @@ function Parcourir() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchGamesAndViewers = async () => {
+    const fetchTopGames = async () => {
       try {
-        // Récupérer les top jeux
         const topGames = await getTopGames(10);
+        // Initialiser avec 0 spectateurs
+        const initialGames = topGames.map((game) => ({
+          id: game.id,
+          name: game.name,
+          imageUrl: game.box_art_url,
+          viewers: 0, // Valeur par défaut
+        }));
+        setGames(initialGames);
+        setLoading(false);
 
-        // Récupérer les spectateurs pour chaque jeu
-        const gamesWithViewers = await Promise.all(
-          topGames.map(async (game) => {
-            const viewers = await getViewersByGame(game.id);
-            return {
-              id: game.id,
-              name: game.name,
-              imageUrl: game.box_art_url,
-              viewers,
-            };
-          })
-        );
-
-        setGames(gamesWithViewers);
+        // Charger les spectateurs en arrière-plan
+        initialGames.forEach(async (game, index) => {
+          const viewers = await getViewersByGame(game.id);
+          setGames((prevGames) =>
+            prevGames.map((g) =>
+              g.id === game.id ? { ...g, viewers } : g
+            )
+          );
+        });
       } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error);
-      } finally {
+        console.error('Erreur lors de la récupération des top jeux :', error);
         setLoading(false);
       }
     };
 
-    fetchGamesAndViewers();
+    fetchTopGames();
   }, []);
 
   return (
