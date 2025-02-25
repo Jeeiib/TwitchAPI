@@ -38,7 +38,7 @@ twitchApi.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const getTopGames = async () => {
+export const getTopGames = async (limit = 10) => {
   try {
     const response = await twitchApi.get(`games/top?first=${limit}`);
     return response.data.data;
@@ -54,6 +54,25 @@ export const getTopStreamers = async () => {
     return response.data.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des top streamers :', error);
+    throw error;
+  }
+};
+
+export const getViewersByGame = async (gameId) => {
+  try {
+    let totalViewers = 0;
+    let pagination = '';
+    do {
+      const response = await twitchApi.get(
+        `streams?game_id=${gameId}&first=100${pagination ? `&after=${pagination}` : ''}`
+      );
+      const streams = response.data.data;
+      totalViewers += streams.reduce((sum, stream) => sum + stream.viewer_count, 0);
+      pagination = response.data.pagination.cursor;
+    } while (pagination); // Continue tant qu'il y a une page suivante
+    return totalViewers;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des spectateurs :', error);
     throw error;
   }
 };
