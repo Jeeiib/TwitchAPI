@@ -1,8 +1,9 @@
 // src/components/GameCard.js
 import React from "react";
 import { Badge, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-function GameCard({ name, imageUrl, viewers, small, categories }) {
+function GameCard({ name, imageUrl, viewers, small, categories, gameId }) {
   // Remplacer les placeholders de l'URL de l'image par des dimensions fixes
   const formattedImageUrl = imageUrl
     .replace("{width}", "285") // Largeur personnalisée
@@ -14,6 +15,7 @@ function GameCard({ name, imageUrl, viewers, small, categories }) {
     borderRadius: "8px",
     overflow: "hidden",
     transition: "transform 0.2s ease",
+    textDecoration: "none", 
   };
 
   const hoverStyle = {
@@ -24,6 +26,7 @@ function GameCard({ name, imageUrl, viewers, small, categories }) {
   };
 
   return (
+    <Link to={`/parcourir/${gameId}`} style={{ textDecoration: "none" }}> {/* Lien vers la page détails */}
     <Card 
       className={small ? "h-100 small-card" : "h-100"} 
       style={{...cardStyle, ...hoverStyle}}
@@ -66,6 +69,7 @@ function GameCard({ name, imageUrl, viewers, small, categories }) {
         </div>
       </Card.Body>
     </Card>
+    </Link>
   );
 }
 
