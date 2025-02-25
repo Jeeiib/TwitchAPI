@@ -76,7 +76,10 @@ function GameCard({ name, imageUrl, viewers, small, categories, gameId }) {
 // Valeur par défaut pour éviter les erreurs si les catégories ne sont pas fournies
 GameCard.defaultProps = {
     categories: [],
-    small: false
+    small: false,
+    viewers: 0,
+    gameId: "",
+
   };
   
 

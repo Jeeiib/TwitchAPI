@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import Parcourir from "./pages/Parcourir";
+import ParcourirDetails from './pages/ParcourirDetails';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/parcourir" element={<Parcourir />} />
+          <Route path="/parcourir/:gameId" element={<ParcourirDetails />} />
         </Routes>
       </BrowserRouter>
       

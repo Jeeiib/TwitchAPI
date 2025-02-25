@@ -19,7 +19,8 @@ function Parcourir() {
           name: game.name,
           imageUrl: game.box_art_url,
           viewers: 0, // Valeur par défaut
-          categories: ['Jeux vidéo']
+          categories: ['Jeux vidéo'],
+          gameId: game.id, // Pour la navigation
         }));
         setGames(initialGames);
         setLoading(false);
@@ -76,6 +77,7 @@ function Parcourir() {
                 imageUrl={game.imageUrl}
                 viewers={game.viewers}
                 categories={game.categories}
+                gameId={game.id}
               />
             </Col>
           ))}
