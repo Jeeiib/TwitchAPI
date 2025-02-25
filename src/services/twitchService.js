@@ -48,7 +48,7 @@ export const getTopGames = async (limit = 20) => {
   }
 };
 
-export const getTopStreamers = async () => {
+export const getTopStreamers = async (limit=20) => {
   try {
     const response = await twitchApi.get(`streams?first=${limit}`);
     return response.data.data;
