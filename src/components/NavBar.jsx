@@ -7,7 +7,7 @@ import Logo from '../assets/twitchlogo.png';
 function NavBar() {
   return (
     <>
-      <Navbar bg="dark" data-bs-theme="dark">
+      <Navbar bg="#18181B" data-bs-theme="dark">
           <Navbar.Brand href="HomePage"><img src={Logo} alt="Logo Twitch" style={{width : "50px"}} /></Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="parcourir">Parcourir</Nav.Link>
