@@ -6,7 +6,7 @@ import CarouselTopStream from '../components/Carroussel';
 const HomePage = () => {
     return (
         <div>
-            <h1>Top Streamer</h1>
+            <h1 className='text-center'>Top Streamers</h1>
             <div>
                 <CarouselTopStream />
             </div>
