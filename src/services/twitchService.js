@@ -48,4 +48,14 @@ export const getTopGames = async (limit = 10) => {
   }
 };
 
+export const getTopStreamers = async (limit = 10) => {
+  try {
+    const response = await twitchApi.get(`streams?first=${limit}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des top streamers :', error);
+    throw error;
+  }
+};
+
 export default twitchApi;
