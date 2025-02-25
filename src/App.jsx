@@ -12,7 +12,7 @@ function App() {
       <BrowserRouter>
       <Navbar />
         <Routes>
-          <Route path="/HomePage" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/parcourir" element={<Parcourir />} />
         </Routes>
       </BrowserRouter>

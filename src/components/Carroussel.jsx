@@ -1,17 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Carousel from 'react-bootstrap/Carousel';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import twitchService from 'services/twitchService';
-
+import { Container } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { getTopStreamers } from '../services/twitchService'; 
 const CarouselTopStream = () => {
-
     const [topStreamers, setTopStreamers] = useState([]);
-
 
     const fetchTopStreamers = async () => {
         try {
-            const response = await twitchService.getTopStreamers();
+            const response = await getTopStreamers();
             console.log(response.data);
             setTopStreamers(response.data);
         } catch (error) {
@@ -23,22 +20,24 @@ const CarouselTopStream = () => {
         fetchTopStreamers();
     }, []);
 
-
-    return <>
-
-        <Carousel fade>
-            {topStreamers.map((streamer, index) => (
-                <Carousel.Item key={index}>
-                    <img src="" alt="" />
-                    <Carousel.Caption>
-                    </Carousel.Caption>
-                </Carousel.Item>
-            ))}
-        </Carousel>
-
-
-
-    </>;
+    return (
+        <Container fluid style={{ backgroundColor: "#0e0e10", color: 'white', width: '100vw', padding: '20px 0' }}>
+            <Carousel fade>
+                {topStreamers.map((streamer, index) => (
+                    <Carousel.Item key={index}>
+                        <video className="d-block w-100" controls>
+                            <source src={streamer.video_url} type="video/mp4" /> 
+                            Votre navigateur ne supporte pas la balise vidéo.
+                        </video>
+                        <Carousel.Caption>
+                            <h3>{streamer.user_name}</h3>
+                            <p>{streamer.description} viewers</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                ))}
+            </Carousel>
+        </Container>
+    );
 }
 
 export default CarouselTopStream;
