@@ -60,16 +60,9 @@ export const getTopStreamers = async () => {
 
 export const getViewersByGame = async (gameId) => {
   try {
-    let totalViewers = 0;
-    let pagination = '';
-    do {
-      const response = await twitchApi.get(
-        `streams?game_id=${gameId}&first=100${pagination ? `&after=${pagination}` : ''}`
-      );
-      const streams = response.data.data;
-      totalViewers += streams.reduce((sum, stream) => sum + stream.viewer_count, 0);
-      pagination = response.data.pagination.cursor;
-    } while (pagination); // Continue tant qu'il y a une page suivante
+    const response = await twitchApi.get(`streams?game_id=${gameId}&first=100`);
+    const streams = response.data.data;
+    const totalViewers = streams.reduce((sum, stream) => sum + stream.viewer_count, 0);
     return totalViewers;
   } catch (error) {
     console.error('Erreur lors de la récupération des spectateurs :', error);
@@ -77,8 +70,8 @@ export const getViewersByGame = async (gameId) => {
   }
 };
 
-const checkStreamStatus = async (streamerName) => {
-  const response = await fetch(https://api.twitch.tv/helix/streams?user_login=${streamerName})
+ export const checkStreamStatus = async (streamerName) => {
+  const response = await fetch("https://api.twitch.tv/helix/streams?user_login=${streamerName}")
   const data = await response.json();
   return data.data.length > 0; // Retourne true si en direct, false sinon
 }
