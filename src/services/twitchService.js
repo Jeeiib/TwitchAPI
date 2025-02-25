@@ -134,4 +134,14 @@ export const checkStreamStatus = async (streamerName) => {
   return data.data.length > 0; // Retourne true si en direct, false sinon
 };
 
+export const getStreamsByGame = async (gameId) => {
+  try {
+    const response = await twitchApi.get(`streams?game_id=${gameId}&first=100`);
+    return response.data.data; // Retourne les 100 premiers streams pour ce jeu
+  } catch (error) {
+    console.error("Erreur lors de la récupération des streams par jeu :", error);
+    throw error;
+  }
+};
+
 export default twitchApi;
