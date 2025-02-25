@@ -12,7 +12,7 @@ function Parcourir() {
   useEffect(() => {
     const fetchTopGames = async () => {
       try {
-        const topGames = await getTopGames(40);
+        const topGames = await getTopGames(42);
         // Initialiser avec 0 spectateurs et catégories vides
         const initialGames = topGames.map((game) => ({
           id: game.id,
