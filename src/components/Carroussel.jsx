@@ -1,13 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect, useRef } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import { getTopStreamers } from '../services/twitchService';
 
 const CarouselTopStream = () => {
     const [topStreamers, setTopStreamers] = useState([]);
     const [error, setError] = useState(null);
     const [index, setIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
     const iframeRefs = useRef([]);
 
     // Récupération des top streamers
@@ -27,6 +28,8 @@ const CarouselTopStream = () => {
             console.error("Erreur lors de la récupération des top streamers :", error);
             setError("Impossible de charger les streamers.");
             setTopStreamers([]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -81,57 +84,67 @@ const CarouselTopStream = () => {
             margin: '0',
             maxWidth: '100%'
         }}>
-            <Carousel 
-                fade 
-                activeIndex={index}
-                onSelect={handleSelect}
-                interval={null} 
-            >
-                {error ? (
-                    <Carousel.Item>
-                        <div style={{ 
-                            display: 'flex', 
-                            justifyContent: 'center', 
-                            alignItems: 'center', 
-                            height: '90vh' 
-                        }}>
-                            <p>{error}</p>
-                        </div>
-                    </Carousel.Item>
-                ) : topStreamers.length > 0 ? (
-                    topStreamers.map((streamer, idx) => (
-                        <Carousel.Item key={idx}>
+            {loading ? (
+                <div className="text-center">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Chargement...</span>
+                </Spinner>
+              </div>
+            ) : (
+                <Carousel 
+                    fade 
+                    activeIndex={index}
+                    onSelect={handleSelect}
+                    interval={null} 
+                >
+                    {error ? (
+                        <Carousel.Item>
                             <div style={{ 
                                 display: 'flex', 
                                 justifyContent: 'center', 
-                                alignItems: 'center',
+                                alignItems: 'center', 
                                 height: '90vh' 
                             }}>
-                                <iframe
-                                    ref={el => iframeRefs.current[idx] = el}
-                                    src={`https://player.twitch.tv/?channel=${streamer.user_name}&parent=localhost&muted=${idx !== index}`}
-                                    height="70%"
-                                    width="70%"
-                                    frameBorder="0"
-                                    allowFullScreen={true}
-                                />
+                                <p>{error}</p>
                             </div>
-                            
                         </Carousel.Item>
-                    ))
-                ) : (
-                    <Carousel.Item>
-                        <div style={{ 
-                            display: 'flex', 
-                            justifyContent: 'center', 
-                            alignItems: 'center', 
-                            height: '90vh' // Utilise 90% de la hauteur de la fenêtre
-                        }}>
-                            <p>Aucun streamer en direct pour le moment...</p>
-                        </div>
-                    </Carousel.Item>
-                )}
-            </Carousel>
+                    ) : topStreamers.length > 0 ? (
+                        topStreamers.map((streamer, idx) => (
+                            <Carousel.Item key={idx}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'center', 
+                                    alignItems: 'center',
+                                    height: '90vh' 
+                                }}>
+                                    <iframe
+                                        ref={el => iframeRefs.current[idx] = el}
+                                        src={`https://player.twitch.tv/?channel=${streamer.user_name}&parent=localhost&muted=${idx !== index}`}
+                                        height="90%"
+                                        width="70%"
+                                        frameBorder="0"
+                                        allowFullScreen={true}
+                                        loading="lazy"
+                                        className='mb-5'
+                                    />
+                                </div>
+                                
+                            </Carousel.Item>
+                        ))
+                    ) : (
+                        <Carousel.Item>
+                            <div style={{ 
+                                display: 'flex', 
+                                justifyContent: 'center', 
+                                alignItems: 'center', 
+                                height: '90vh' // Utilise 90% de la hauteur de la fenêtre
+                            }}>
+                                <p>Aucun streamer en direct pour le moment...</p>
+                            </div>
+                        </Carousel.Item>
+                    )}
+                </Carousel>
+            )}
         </Container>
     );
 };
