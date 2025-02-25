@@ -3,6 +3,7 @@ import "./App.css";
 import twitchApi from "./services/twitchService";
 import { BrowserRouter, Routes } from "react-router-dom";
 
+
 function App() {
   return (
     <>
@@ -10,6 +11,7 @@ function App() {
         <Routes>
         </Routes>
       </BrowserRouter>
+      
     </>
   );
 }
