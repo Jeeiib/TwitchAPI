@@ -48,7 +48,7 @@ export const getTopGames = async (limit = 20) => {
   }
 };
 
-export const getTopStreamers = async (limit=20) => {
+export const getTopStreamers = async (limit = 20) => {
   try {
     const response = await twitchApi.get(`streams?first=${limit}`);
     return response.data.data;
@@ -74,15 +74,15 @@ export const getViewersByGame = async (gameId) => {
 };
 
 const predefinedGameCategories = {
-  "21779": ["Action", "FPS", "Battle Royale"], // Fortnite
-  "33214": ["Sport", "Simulation", "Football"], // FIFA
-  "32982": ["MOBA", "Stratégie", "Compétitif"], // League of Legends
-  "32399": ["FPS", "Compétitif", "Action"], // Counter-Strike
-  "27471": ["Sandbox", "Aventure", "Survie"], // Minecraft
-  "32982": ["MOBA", "Stratégie", "Action"], // DOTA 2
-  "516575": ["FPS", "Compétitif", "Action"], // VALORANT
-  "33214": ["Sport", "Simulation", "Football"], // FIFA
-  "512710": ["Battle Royale", "FPS", "Action"], // Call of Duty: Warzone
+  21779: ["Action", "FPS", "Battle Royale"], // Fortnite
+  33214: ["Sport", "Simulation", "Football"], // FIFA
+  32982: ["MOBA", "Stratégie", "Compétitif"], // League of Legends
+  32399: ["FPS", "Compétitif", "Action"], // Counter-Strike
+  27471: ["Sandbox", "Aventure", "Survie"], // Minecraft
+  32982: ["MOBA", "Stratégie", "Action"], // DOTA 2
+  516575: ["FPS", "Compétitif", "Action"], // VALORANT
+  33214: ["Sport", "Simulation", "Football"], // FIFA
+  512710: ["Battle Royale", "FPS", "Action"], // Call of Duty: Warzone
   // Ajoutez d'autres jeux populaires selon vos besoins...
 };
 
@@ -92,59 +92,80 @@ export const getGameCategories = async (gameId) => {
   try {
     // Vérifier si nous avons des catégories prédéfinies pour ce jeu
     if (predefinedGameCategories[gameId]) {
-      console.log("Catégories récupérées (prédéfinies):", predefinedGameCategories[gameId]);
+      console.log(
+        "Catégories récupérées (prédéfinies):",
+        predefinedGameCategories[gameId]
+      );
       return predefinedGameCategories[gameId];
     }
-    
+
     // Si nous n'avons pas de catégories prédéfinies, essayons d'obtenir le nom du jeu
     const response = await twitchApi.get(`games?id=${gameId}`);
     if (response.data && response.data.data && response.data.data.length > 0) {
       const gameName = response.data.data[0].name.toLowerCase();
-      
+
       // Essayer de déterminer les catégories en fonction du nom
-      let defaultCategories = ['Jeux vidéo'];
-      
+      let defaultCategories = ["Jeux vidéo"];
+
       // Logique pour déterminer les catégories en fonction du nom du jeu
-      if (gameName.includes('shooter') || gameName.includes('fps')) {
-        defaultCategories = ['FPS', 'Action', 'Tir'];
-      } else if (gameName.includes('strategy') || gameName.includes('stratégie')) {
-        defaultCategories = ['Stratégie', 'Réflexion'];
-      } else if (gameName.includes('rpg') || gameName.includes('role-playing')) {
-        defaultCategories = ['RPG', 'Aventure'];
-      } else if (gameName.includes('sport') || gameName.includes('racing') || gameName.includes('course')) {
-        defaultCategories = ['Sport', 'Simulation'];
+      if (gameName.includes("shooter") || gameName.includes("fps")) {
+        defaultCategories = ["FPS", "Action", "Tir"];
+      } else if (
+        gameName.includes("strategy") ||
+        gameName.includes("stratégie")
+      ) {
+        defaultCategories = ["Stratégie", "Réflexion"];
+      } else if (
+        gameName.includes("rpg") ||
+        gameName.includes("role-playing")
+      ) {
+        defaultCategories = ["RPG", "Aventure"];
+      } else if (
+        gameName.includes("sport") ||
+        gameName.includes("racing") ||
+        gameName.includes("course")
+      ) {
+        defaultCategories = ["Sport", "Simulation"];
       }
-      
+
       console.log("Catégories récupérées (déduites):", defaultCategories);
       return defaultCategories;
     }
 
-    return ['Jeux vidéo']; // Catégorie par défaut
+    return ["Jeux vidéo"]; // Catégorie par défaut
   } catch (error) {
     console.error("Erreur dans getGameCategories:", error);
-    return ['Jeux vidéo']; // Catégorie par défaut en cas d'erreur
+    return ["Jeux vidéo"]; // Catégorie par défaut en cas d'erreur
   }
 };
 
-export const checkStreamStatus = async (streamerName) => {
-  const response = await fetch(
-    "https://api.twitch.tv/helix/streams?user_login=${streamerName}"
-  );
-  const data = await response.json();
-  return data.data.length > 0; // Retourne true si en direct, false sinon
+export const getGameNameById = async (gameId) => {
+  try {
+    const response = await twitchApi.get(`games?id=${gameId}`);
+    const game = response.data.data[0]; // Le premier résultat correspond au gameId
+    return game ? game.name : "Jeu inconnu"; // Retourne le nom ou une valeur par défaut
+  } catch (error) {
+    console.error("Erreur lors de la récupération du nom du jeu :", error);
+    return "Jeu inconnu";
+  }
 };
 
 export const getStreamsByGame = async (gameId, pagination = "") => {
   try {
     const response = await twitchApi.get(
-      `streams?game_id=${gameId}&first=100${pagination ? `&after=${pagination}` : ""}`
+      `streams?game_id=${gameId}&first=100${
+        pagination ? `&after=${pagination}` : ""
+      }`
     );
     return {
       data: response.data.data, // Les 100 streams de cette page
       pagination: response.data.pagination.cursor, // Curseur pour la page suivante
     };
   } catch (error) {
-    console.error("Erreur lors de la récupération des streams par jeu :", error);
+    console.error(
+      "Erreur lors de la récupération des streams par jeu :",
+      error
+    );
     throw error;
   }
 };

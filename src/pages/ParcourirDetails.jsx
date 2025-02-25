@@ -1,7 +1,7 @@
 // src/pages/ParcourirDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getStreamsByGame } from "../services/twitchService";
+import { getStreamsByGame, getGameNameById } from "../services/twitchService";
 import StreamerCard from "../components/StreamerCard";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,42 +9,50 @@ import "bootstrap/dist/css/bootstrap.min.css";
 function ParcourirDetails() {
   const { gameId } = useParams();
   const [streamers, setStreamers] = useState([]);
+  const [gameName, setGameName] = useState(""); // État pour le nom du jeu
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationCursor, setPaginationCursor] = useState("");
   const [hasMore, setHasMore] = useState(true);
-  const streamersPerPage = 50;
+  const streamersPerPage = 48;
 
   useEffect(() => {
-    const fetchInitialStreamers = async () => {
+    const fetchInitialData = async () => {
       if (!gameId) {
         setLoading(false);
         return;
       }
       try {
+        // Récupérer le nom du jeu
+        const name = await getGameNameById(gameId);
+        setGameName(name);
+
+        // Récupérer les premiers streams
         const { data, pagination } = await getStreamsByGame(gameId);
-        console.log("Initial streams:", data);
+        console.log("Initial streams:", data.length, "Pagination:", pagination);
         setStreamers(data);
         setPaginationCursor(pagination);
-        setHasMore(!!pagination && data.length === 100);
+        setHasMore(!!pagination);
       } catch (error) {
         console.error("Erreur lors de la récupération initiale :", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchInitialStreamers();
+    fetchInitialData();
   }, [gameId]);
 
   const loadMoreStreamers = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
     try {
+      console.log("Loading more with cursor:", paginationCursor);
       const { data, pagination } = await getStreamsByGame(gameId, paginationCursor);
-      console.log("Additional streams:", data);
+      console.log("Additional streams:", data.length, "New pagination:", pagination);
       setStreamers((prev) => [...prev, ...data]);
       setPaginationCursor(pagination);
       setHasMore(!!pagination && data.length === 100);
+      console.log("Has more after load:", !!pagination && data.length === 100);
     } catch (error) {
       console.error("Erreur lors du chargement des streams suivants :", error);
     } finally {
@@ -79,6 +87,12 @@ function ParcourirDetails() {
     }
   };
 
+  // Générer les numéros de page
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages + (hasMore ? 1 : 0); i++) {
+    pageNumbers.push(i);
+  }
+
   // Styles Twitch pour la pagination
   const paginationStyle = {
     display: "flex",
@@ -90,7 +104,7 @@ function ParcourirDetails() {
   };
 
   const buttonStyle = {
-    backgroundColor: "#9147FF", // Violet Twitch
+    backgroundColor: "#9147FF",
     color: "white",
     border: "none",
     padding: "8px 16px",
@@ -101,7 +115,7 @@ function ParcourirDetails() {
 
   const disabledButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#4B367C", // Violet sombre pour désactivé
+    backgroundColor: "#4B367C",
     cursor: "not-allowed",
     opacity: 0.6,
   };
@@ -110,21 +124,15 @@ function ParcourirDetails() {
     color: "white",
     fontSize: "1rem",
     padding: "6px 12px",
-    backgroundColor: isActive ? "#9147FF" : "#2A2A2E", // Violet si actif, gris sinon
+    backgroundColor: isActive ? "#9147FF" : "#2A2A2E",
     borderRadius: "5px",
     cursor: "pointer",
     transition: "background-color 0.2s ease",
   });
 
-  // Générer les numéros de page
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages + (hasMore ? 1 : 0); i++) {
-    pageNumbers.push(i);
-  }
-
   return (
     <Container fluid className="px-2 py-4">
-      <h1 className="text-center mb-3 text-white">Streamers pour le jeu (ID: {gameId || "Non défini"})</h1>
+      <h1 className="text-center mb-5 text-white">{gameName || "Chargement..."}</h1>
       {loading && streamers.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
@@ -145,7 +153,6 @@ function ParcourirDetails() {
               </Col>
             ))}
           </Row>
-          {/* Pagination stylée Twitch sans fond */}
           <div style={paginationStyle}>
             <button
               style={currentPage === 1 ? disabledButtonStyle : buttonStyle}
