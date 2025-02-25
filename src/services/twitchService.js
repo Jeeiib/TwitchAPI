@@ -38,7 +38,7 @@ twitchApi.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const getTopGames = async (limit = 10) => {
+export const getTopGames = async () => {
   try {
     const response = await twitchApi.get(`games/top?first=${limit}`);
     return response.data.data;
@@ -48,7 +48,7 @@ export const getTopGames = async (limit = 10) => {
   }
 };
 
-export const getTopStreamers = async (limit = 10) => {
+export const getTopStreamers = async () => {
   try {
     const response = await twitchApi.get(`streams?first=${limit}`);
     return response.data.data;
