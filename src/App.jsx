@@ -1,6 +1,5 @@
-import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
-import twitchApi from "./services/twitchService";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";

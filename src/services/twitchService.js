@@ -38,7 +38,7 @@ twitchApi.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const getTopGames = async (limit = 10) => {
+export const getTopGames = async (limit = 20) => {
   try {
     const response = await twitchApi.get(`games/top?first=${limit}`);
     return response.data.data;
@@ -76,5 +76,11 @@ export const getViewersByGame = async (gameId) => {
     throw error;
   }
 };
+
+const checkStreamStatus = async (streamerName) => {
+  const response = await fetch(https://api.twitch.tv/helix/streams?user_login=${streamerName})
+  const data = await response.json();
+  return data.data.length > 0; // Retourne true si en direct, false sinon
+}
 
 export default twitchApi;
