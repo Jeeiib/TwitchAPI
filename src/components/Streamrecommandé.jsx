@@ -62,51 +62,54 @@ const RecommendedStreams = ({ gameId, gameTitle, limit = 4 }) => {
 
     return (
         <div className="recommended-streams my-4">
-            <h3 className="mb-3">Streams recommandés: {gameTitle}</h3>
+            <h3 className="mb-3">{gameTitle}</h3>
+            <br />
             <Row className="stream-row">
                 {streams.slice(0, 4).map((stream) => (
-                    <Col key={stream.id} md={3} className="stream-col mb-3">
-                        <Link to={`/streamer/${stream.user_login}`} style={{ textDecoration: 'none' }}>
-                            <Card className="stream-card"
-                                onMouseEnter={() => handleMouseEnter(stream.id)}
-                                onMouseLeave={handleMouseLeave}>
-                                <div className="thumbnail-container">
-                                    {hoveredStream === stream.id ? (
-                                        <div className="preview-container">
-                                            <iframe
-                                                src={`https://player.twitch.tv/?channel=${stream.user_login}&parent=${window.location.hostname}&muted=true&autoplay=true&controls=false`}
-                                                height="248"
-                                                width="100%"
-                                                allowFullScreen={false}
-                                                frameBorder="0"
-                                                title={`Preview de ${stream.user_name}`}
-                                            ></iframe>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <Card.Img
-                                                variant="top"
-                                                src={formatThumbnailUrl(stream.thumbnail_url)}
-                                                alt={`Stream de ${stream.user_name}`}
-                                                loading="lazy"
-                                            />
-                                            {stream.viewer_count && (
-                                                <div className="viewer-badge">
-                                                    <span>🔴 {stream.viewer_count.toLocaleString()}</span>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                </div>
-                                <Card.Body>
-                                    <div className="stream-info">
-                                        <div className="stream-title">{stream.title}</div>
-                                        <div className="stream-user">{stream.user_name}</div>
-                                        <div className="stream-game">{stream.game_name}</div>
+                    <Col key={stream.id} md={3} className="stream-col">
+                        <div className="stream-card-wrapper">
+                            <Link to={`/streamer/${stream.user_login}`} style={{ textDecoration: 'none' }}>
+                                <Card className="stream-card"
+                                    onMouseEnter={() => handleMouseEnter(stream.id)}
+                                    onMouseLeave={handleMouseLeave}>
+                                    <div className="thumbnail-container">
+                                        {hoveredStream === stream.id ? (
+                                            <div className="preview-container">
+                                                <iframe
+                                                    src={`https://player.twitch.tv/?channel=${stream.user_login}&parent=${window.location.hostname}&muted=true&autoplay=true&controls=false`}
+                                                    height="248"
+                                                    width="100%"
+                                                    allowFullScreen={false}
+                                                    frameBorder="0"
+                                                    title={`Preview de ${stream.user_name}`}
+                                                ></iframe>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <Card.Img
+                                                    variant="top"
+                                                    src={formatThumbnailUrl(stream.thumbnail_url)}
+                                                    alt={`Stream de ${stream.user_name}`}
+                                                    loading="lazy"
+                                                />
+                                                {stream.viewer_count && (
+                                                    <div className="viewer-badge">
+                                                        <span>🔴 {stream.viewer_count.toLocaleString()}</span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
                                     </div>
-                                </Card.Body>
-                            </Card>
-                        </Link>
+                                    <Card.Body>
+                                        <div className="stream-info">
+                                            <div className="stream-title">{stream.title}</div>
+                                            <div className="stream-user">{stream.user_name}</div>
+                                            <div className="stream-game">{stream.game_name}</div>
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Link>
+                        </div>
                     </Col>
                 ))}
             </Row>
