@@ -102,6 +102,22 @@
   .error-container {
     color: #ff5e5e;
   }
+
+  .tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tag-indicator {
+  background-color: #3a3a3d;
+  color: #dedee3;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
   
   /* Responsive design pour les écrans plus petits */
   @media (max-width: 1200px) {

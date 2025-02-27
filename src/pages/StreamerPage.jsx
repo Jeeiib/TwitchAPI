@@ -8,7 +8,7 @@ const StreamerPage = () => {
     const [streamerInfo, setStreamerInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     useEffect(() => {
         const fetchStreamerInfo = async () => {
             try {
@@ -23,26 +23,26 @@ const StreamerPage = () => {
                 setIsLoading(false);
             }
         };
-        
+
         if (streamerName) {
             fetchStreamerInfo();
         }
     }, [streamerName]);
-    
+
     if (isLoading) {
         return <div className="loading-container">Chargement du stream...</div>;
     }
-    
+
     if (error) {
         return <div className="error-container">{error}</div>;
     }
-    
+
     return (
         <div className="streamer-page">
             <div className="stream-layout">
                 <div className="stream-container">
                     {streamerName && (
-                        <iframe 
+                        <iframe
                             src={`https://player.twitch.tv/?channel=${streamerName}&parent=${window.location.hostname}`}
                             height="720"
                             width="100%"
@@ -51,27 +51,42 @@ const StreamerPage = () => {
                             title={`Stream de ${streamerName}`}
                         ></iframe>
                     )}
-                    
+
                     {/* Section d'informations du streamer */}
                     {streamerInfo && (
                         <div className="streamer-info">
                             <div className="streamer-header">
-                                <img 
-                                    src={streamerInfo.profile_image_url} 
-                                    alt={`${streamerInfo.display_name} avatar`} 
-                                    className="streamer-avatar" 
+                                <img
+                                    src={streamerInfo.profile_image_url}
+                                    alt={`${streamerInfo.display_name} avatar`}
+                                    className="streamer-avatar"
                                 />
                                 <div className="streamer-titles">
                                     <h2 className="streamer-name">{streamerInfo.display_name}</h2>
-                                    {streamerInfo.isLive && (
-                                        <div className="live-indicator">EN DIRECT</div>
-                                    )}
+                                    <div className="streamer-status-container">
+                                        {streamerInfo.isLive && (
+                                            <div className="live-indicator">EN DIRECT</div>
+
+                                        )}
+                                        {streamerInfo.tags && streamerInfo.tags.length > 0 && (
+                                            <div className="tags-container">
+                                                {Array.isArray(streamerInfo.tags) ?
+                                                    streamerInfo.tags.map((tag, index) => (
+                                                        <span key={index} className="tag-indicator">{tag}</span>
+                                                    ))
+                                                    :
+                                                    <span className="tag-indicator">{streamerInfo.tags}</span>
+                                                }
+                                            </div>
+                                        )}
+
+                                    </div>
                                     {streamerInfo.stream?.title && (
                                         <h3 className="stream-title">{streamerInfo.stream.title}</h3>
                                     )}
                                 </div>
                             </div>
-                            
+
                             <div className="streamer-stats">
                                 {streamerInfo.stream?.viewer_count && (
                                     <div className="stat-item">
@@ -79,12 +94,7 @@ const StreamerPage = () => {
                                         <span className="stat-label">spectateurs</span>
                                     </div>
                                 )}
-                                {streamerInfo.view_count && (
-                                    <div className="stat-item">
-                                        <span className="stat-value">{streamerInfo.view_count.toLocaleString()}</span>
-                                        <span className="stat-label">vues totales</span>
-                                    </div>
-                                )}
+                                
                                 {streamerInfo.stream?.game_name && (
                                     <div className="stat-item">
                                         <span className="stat-value">{streamerInfo.stream.game_name}</span>
@@ -92,19 +102,21 @@ const StreamerPage = () => {
                                     </div>
                                 )}
                             </div>
-                            
+
                             {streamerInfo.description && (
                                 <div className="streamer-bio">
                                     <p>{streamerInfo.description}</p>
                                 </div>
                             )}
+                           
+
                         </div>
                     )}
                 </div>
-                
+
                 <div className="chat-container">
                     {streamerName && (
-                        <iframe 
+                        <iframe
                             src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${window.location.hostname}`}
                             height="720"
                             width="100%"
@@ -117,5 +129,5 @@ const StreamerPage = () => {
         </div>
     );
 }
- 
+
 export default StreamerPage;
