@@ -78,19 +78,6 @@ export const getViewersByGame = async (gameId) => {
   }
 };
 
-const predefinedGameCategories = {
-  21779: ["Action", "FPS", "Battle Royale"], // Fortnite
-  33214: ["Sport", "Simulation", "Football"], // FIFA
-  32982: ["MOBA", "Stratégie", "Compétitif"], // League of Legends
-  32399: ["FPS", "Compétitif", "Action"], // Counter-Strike
-  27471: ["Sandbox", "Aventure", "Survie"], // Minecraft
-  32982: ["MOBA", "Stratégie", "Action"], // DOTA 2
-  516575: ["FPS", "Compétitif", "Action"], // VALORANT
-  33214: ["Sport", "Simulation", "Football"], // FIFA
-  512710: ["Battle Royale", "FPS", "Action"], // Call of Duty: Warzone
-  // Ajoutez d'autres jeux populaires selon vos besoins...
-};
-
 // Fonction pour récupérer les catégories d'un jeu spécifique
 export const getGameCategories = async (gameId) => {
   console.log(`Récupération des catégories pour le jeu ID: ${gameId}`);

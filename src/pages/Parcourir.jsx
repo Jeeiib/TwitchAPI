@@ -1,9 +1,10 @@
 // src/pages/Parcourir.jsx
 import React, { useState, useEffect } from "react";
-import { getTopGames, getViewersByGame, getGameCategories } from "../services/twitchService";
+import { getTopGames, getViewersByGame } from "../services/twitchService"; 
 import GameCard from "../components/GameCard";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import predefinedGameCategories from "../services/gameCategories";
 
 function Parcourir() {
   const [games, setGames] = useState([]);
@@ -23,7 +24,7 @@ function Parcourir() {
           name: game.name,
           imageUrl: game.box_art_url,
           viewers: 0,
-          categories: ["Jeux vidéo"],
+          categories: predefinedGameCategories[game.id] || ["Jeux vidéo"], // Utiliser les catégories prédéfinies
           gameId: game.id,
         }));
         setGames(initialGames);
@@ -31,15 +32,13 @@ function Parcourir() {
         setHasMore(!!pagination);
         console.log("Has more after initial load:", !!pagination);
 
-        // Charger les spectateurs et catégories en arrière-plan
+        // Charger les spectateurs en arrière-plan
         initialGames.forEach(async (game) => {
           try {
             const viewers = await getViewersByGame(game.id);
-            const categories = await getGameCategories(game.id) || ["Jeux vidéo"];
-            const finalCategories = categories.slice(0, 3);
             setGames((prevGames) =>
               prevGames.map((g) =>
-                g.id === game.id ? { ...g, viewers, categories: finalCategories } : g
+                g.id === game.id ? { ...g, viewers } : g
               )
             );
           } catch (error) {
@@ -70,7 +69,7 @@ function Parcourir() {
         name: game.name,
         imageUrl: game.box_art_url,
         viewers: 0,
-        categories: ["Jeux vidéo"],
+        categories: predefinedGameCategories[game.id] || ["Jeux vidéo"], // Utiliser les catégories prédéfinies
         gameId: game.id,
       }));
       setGames((prev) => {
@@ -82,15 +81,13 @@ function Parcourir() {
       setHasMore(!!pagination);
       console.log("Has more after load:", !!pagination);
 
-      // Charger les spectateurs et catégories pour les nouveaux jeux
+      // Charger les spectateurs pour les nouveaux jeux
       newGames.forEach(async (game) => {
         try {
           const viewers = await getViewersByGame(game.id);
-          const categories = await getGameCategories(game.id) || ["Jeux vidéo"];
-          const finalCategories = categories.slice(0, 3);
           setGames((prevGames) =>
             prevGames.map((g) =>
-              g.id === game.id ? { ...g, viewers, categories: finalCategories } : g
+              g.id === game.id ? { ...g, viewers } : g
             )
           );
         } catch (error) {
@@ -110,7 +107,6 @@ function Parcourir() {
   const currentGames = games.slice(indexOfFirstGame, indexOfLastGame);
   const totalPages = Math.ceil(games.length / gamesPerPage);
 
-  // Charger plus si la page est incomplète
   useEffect(() => {
     if (currentGames.length < gamesPerPage && hasMore && !loading) {
       console.log("Page incomplete, triggering loadMoreGames");
@@ -188,8 +184,13 @@ function Parcourir() {
   });
 
   return (
-    <Container fluid className="px-2 py-4">
-      <h1 className="text-center mb-3 text-white">Parcourir les Top Jeux</h1>
+    <Container fluid className="px-2 py-4" style={{ backgroundColor: "#18181B" }}>
+      <h1
+        className="text-center mb-3 text-white fw-bold"
+        style={{ fontSize: "50px" }}
+      >
+        Parcourir
+      </h1>
       {loading && games.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
@@ -216,8 +217,12 @@ function Parcourir() {
               style={currentPage === 1 ? disabledButtonStyle : buttonStyle}
               onClick={handlePrevious}
               disabled={currentPage === 1}
-              onMouseOver={(e) => currentPage !== 1 && (e.target.style.backgroundColor = "#A970FF")}
-              onMouseOut={(e) => currentPage !== 1 && (e.target.style.backgroundColor = "#9147FF")}
+              onMouseOver={(e) =>
+                currentPage !== 1 && (e.target.style.backgroundColor = "#A970FF")
+              }
+              onMouseOut={(e) =>
+                currentPage !== 1 && (e.target.style.backgroundColor = "#9147FF")
+              }
             >
               Précédent
             </button>
@@ -241,10 +246,12 @@ function Parcourir() {
               onClick={handleNext}
               disabled={!hasMore && currentPage === totalPages}
               onMouseOver={(e) =>
-                !(!hasMore && currentPage === totalPages) && (e.target.style.backgroundColor = "#A970FF")
+                !(!hasMore && currentPage === totalPages) &&
+                (e.target.style.backgroundColor = "#A970FF")
               }
               onMouseOut={(e) =>
-                !(!hasMore && currentPage === totalPages) && (e.target.style.backgroundColor = "#9147FF")
+                !(!hasMore && currentPage === totalPages) &&
+                (e.target.style.backgroundColor = "#9147FF")
               }
             >
               Suivant
