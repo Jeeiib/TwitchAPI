@@ -97,7 +97,7 @@ const StreamerPage = () => {
                                         <span className="stat-label">spectateurs</span>
                                     </div>
                                 )}
-                                
+
                                 {streamerInfo.stream?.game_name && (
                                     <div className="stat-item">
                                         <span className="stat-value">{streamerInfo.stream.game_name}</span>
@@ -111,7 +111,7 @@ const StreamerPage = () => {
                                     <p>{streamerInfo.description}</p>
                                 </div>
                             )}
-                             
+
 
                         </div>
                     )}
