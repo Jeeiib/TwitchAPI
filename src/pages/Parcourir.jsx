@@ -6,8 +6,10 @@ import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import predefinedGameCategories from "../services/gameCategories";
 import Select from "react-select"; // Importer react-select
+import { useSidebar } from "../context/SidebarContext"; // Importer useSidebar
 
 function Parcourir() {
+  const { isSidebarHovered } = useSidebar(); // Accéder à isSidebarHovered via le contexte
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -279,7 +281,7 @@ function Parcourir() {
   };
 
   return (
-    <Container fluid className="px-2 py-4">
+    <Container fluid className="px-2 py-4" style={{ marginLeft: isSidebarHovered ? "300px" : "70px", transition: "margin-left 0.3s ease"}}>
       {/* Ligne avec titre à gauche et Select centré */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1

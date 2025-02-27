@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const CLIENT_ID = "w7jrk3kepcklxgzvfpjbrkzajy7o4w";
-const CLIENT_SECRET = "2dkfcn3im8ztu8559kijhu6qt3ld4i";
+const CLIENT_ID = "vxdclru1cktj87ls7rmhoybi5c4os1";
+const CLIENT_SECRET = "osro5gs6xqimw83jti7z6yj8h0p11g";
 
 const twitchApi = axios.create({
   baseURL: "https://api.twitch.tv/helix/",
