@@ -44,7 +44,7 @@ const StreamerPage = () => {
                     {streamerName && (
                         <iframe
                             src={`https://player.twitch.tv/?channel=${streamerName}&parent=${window.location.hostname}`}
-                            height="720"
+                            height="620"
                             width="100%"
                             allowFullScreen={true}
                             frameBorder="0"
