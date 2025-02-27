@@ -38,12 +38,17 @@ twitchApi.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const getTopGames = async (limit = 20) => {
+export const getTopGames = async (pagination = "") => {
   try {
-    const response = await twitchApi.get(`games/top?first=${limit}`);
-    return response.data.data;
+    const response = await twitchApi.get(
+      `games/top?first=100${pagination ? `&after=${pagination}` : ""}`
+    );
+    return {
+      data: response.data.data, // Liste des jeux
+      pagination: response.data.pagination.cursor, // Curseur pour la page suivante
+    };
   } catch (error) {
-    console.error("Erreur lors de la récupération des jeux :", error);
+    console.error("Erreur lors de la récupération des top jeux :", error);
     throw error;
   }
 };
