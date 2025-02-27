@@ -279,7 +279,7 @@ function Parcourir() {
       {/* Ligne avec titre à gauche et Select centré */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1
-          className="text-white fw-bold"
+          className="text-white fw-bold mb-2"
           style={{ fontSize: "50px", marginBottom: 0, width: "30%" }}
         >
           Parcourir
@@ -293,7 +293,7 @@ function Parcourir() {
               setCurrentPage(1); // Réinitialiser la page à 1 quand une option est sélectionnée
             }}
             onMenuOpen={handleMenuOpen} // Ajouté pour éviter l'erreur
-            placeholder="Rechercher un tag ou taper un jeu..."
+            placeholder="Rechercher un tag ou un jeu..."
             styles={customStyles}
             isClearable={true} // Permet de réinitialiser
             isSearchable={true} // Permet la recherche dans les options
