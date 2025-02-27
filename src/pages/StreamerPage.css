@@ -1,0 +1,43 @@
+.streamer-page {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .stream-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .stream-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .stream-container {
+    flex: 1;
+    min-width: 0;
+    /* Assure que le stream est plus large que le chat */
+    flex-basis: 75%;
+  }
+  
+  .chat-container {
+    width: 350px;
+    /* Largeur fixe pour le chat */
+    min-width: 350px;
+  }
+  
+  /* Pour les écrans plus petits */
+  @media (max-width: 1200px) {
+    .stream-layout {
+      flex-direction: column;
+    }
+    
+    .chat-container {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
