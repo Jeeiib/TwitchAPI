@@ -152,7 +152,7 @@ function ParcourirDetails() {
 
   return (
     <Container fluid className="px-2 py-4">
-      <h1 className="text-center mb-3 text-white">{gameName || "Chargement..."}</h1>
+      <h1 className="mb-3 text-white fw-bold" style={{fontSize: "50px"}}>{gameName || "Chargement..."}</h1>
       {loading && streamers.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">

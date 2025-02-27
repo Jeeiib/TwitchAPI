@@ -1,10 +1,11 @@
 // src/pages/Parcourir.jsx
 import React, { useState, useEffect } from "react";
-import { getTopGames, getViewersByGame } from "../services/twitchService"; 
+import { getTopGames, getViewersByGame } from "../services/twitchService";
 import GameCard from "../components/GameCard";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import predefinedGameCategories from "../services/gameCategories";
+import Select from "react-select"; // Importer react-select
 
 function Parcourir() {
   const [games, setGames] = useState([]);
@@ -12,7 +13,26 @@ function Parcourir() {
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationCursor, setPaginationCursor] = useState("");
   const [hasMore, setHasMore] = useState(true);
+  const [selectedOption, setSelectedOption] = useState(null); // État pour l'option sélectionnée (tag ou recherche texte)
   const gamesPerPage = 48;
+
+  // Extraire tous les tags uniques de predefinedGameCategories
+  const allTags = [...new Set(
+    Object.values(predefinedGameCategories)
+      .flat()
+      .filter(tag => tag !== "default" && tag !== "Jeux vidéo") // Exclure les tags par défaut
+  )].sort(); // Trier alphabétiquement
+
+  const options = [
+    { label: "Rechercher un tag ou taper un jeu...", value: "", type: "default" },
+    ...allTags.map((tag) => ({ label: tag, value: tag, type: "tag" })),
+  ];
+
+  // Callback pour onMenuOpen (optionnel, peut être vide si non nécessaire)
+  const handleMenuOpen = () => {
+    console.log("Menu opened");
+    // Ajoute ici une logique si nécessaire
+  };
 
   useEffect(() => {
     const fetchInitialGames = async () => {
@@ -24,7 +44,7 @@ function Parcourir() {
           name: game.name,
           imageUrl: game.box_art_url,
           viewers: 0,
-          categories: predefinedGameCategories[game.id] || ["Jeux vidéo"], // Utiliser les catégories prédéfinies
+          categories: predefinedGameCategories[game.name] || predefinedGameCategories.default, // Utiliser le nom
           gameId: game.id,
         }));
         setGames(initialGames);
@@ -69,7 +89,7 @@ function Parcourir() {
         name: game.name,
         imageUrl: game.box_art_url,
         viewers: 0,
-        categories: predefinedGameCategories[game.id] || ["Jeux vidéo"], // Utiliser les catégories prédéfinies
+        categories: predefinedGameCategories[game.name] || predefinedGameCategories.default, // Utiliser le nom
         gameId: game.id,
       }));
       setGames((prev) => {
@@ -104,8 +124,16 @@ function Parcourir() {
 
   const indexOfFirstGame = (currentPage - 1) * gamesPerPage;
   const indexOfLastGame = currentPage * gamesPerPage;
-  const currentGames = games.slice(indexOfFirstGame, indexOfLastGame);
-  const totalPages = Math.ceil(games.length / gamesPerPage);
+
+  // Filtrer les jeux par nom (recherche texte) ou tag sélectionné
+  const filteredGames = selectedOption
+    ? selectedOption.type === "tag"
+      ? games.filter((game) => game.categories.includes(selectedOption.value))
+      : games.filter((game) => game.name.toLowerCase().includes(selectedOption.value.toLowerCase()))
+    : games;
+
+  const currentGames = filteredGames.slice(indexOfFirstGame, indexOfLastGame);
+  const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
 
   useEffect(() => {
     if (currentGames.length < gamesPerPage && hasMore && !loading) {
@@ -114,7 +142,16 @@ function Parcourir() {
     }
   }, [currentGames, hasMore, loading]);
 
-  console.log("Current page:", currentPage, "Total pages:", totalPages, "Current games:", currentGames.length);
+  console.log(
+    "Current page:",
+    currentPage,
+    "Total pages:",
+    totalPages,
+    "Current games:",
+    currentGames.length,
+    "Selected option:",
+    selectedOption
+  );
 
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -183,14 +220,87 @@ function Parcourir() {
     transition: "background-color 0.2s ease",
   });
 
+  // Style pour react-select
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "#2A2A2E",
+      border: "none",
+      borderRadius: "5px",
+      boxShadow: "none",
+      color: "white",
+      minWidth: "450px",
+      height: "50px",
+      fontSize: "16px",
+      "&:hover": {
+        borderColor: "#9147FF",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: "#2A2A2E",
+      border: "none",
+      borderRadius: "5px",
+      width: "450px",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused ? "#4B367C" : "#2A2A2E",
+      color: "white",
+      fontSize: "16px",
+      padding: "12px 20px",
+      "&:hover": {
+        backgroundColor: "#9147FF",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "white",
+      fontSize: "16px",
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "#A0A0A0",
+      fontSize: "16px",
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: "white",
+      fontSize: "16px",
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      padding: "2px 16px", // Plus d'espace autour du contenu
+    }),
+  };
+
   return (
-    <Container fluid className="px-2 py-4" style={{ backgroundColor: "#18181B" }}>
-      <h1
-        className="text-center mb-3 text-white fw-bold"
-        style={{ fontSize: "50px" }}
-      >
-        Parcourir
-      </h1>
+    <Container fluid className="px-2 py-4">
+      {/* Ligne avec titre à gauche et Select centré */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1
+          className="text-white fw-bold"
+          style={{ fontSize: "50px", marginBottom: 0, width: "30%" }}
+        >
+          Parcourir
+        </h1>
+        <div style={{ width: "70%", display: "flex", justifyContent: "center", paddingRight: "30%" }}>
+          <Select
+            options={options}
+            value={selectedOption ? options.find(opt => opt.value === selectedOption.value && opt.type === selectedOption.type) : null}
+            onChange={(option) => {
+              setSelectedOption(option);
+              setCurrentPage(1); // Réinitialiser la page à 1 quand une option est sélectionnée
+            }}
+            onMenuOpen={handleMenuOpen} // Ajouté pour éviter l'erreur
+            placeholder="Rechercher un tag ou taper un jeu..."
+            styles={customStyles}
+            isClearable={true} // Permet de réinitialiser
+            isSearchable={true} // Permet la recherche dans les options
+          />
+        </div>
+      </div>
+
       {loading && games.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
