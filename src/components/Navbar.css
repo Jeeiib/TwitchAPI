@@ -1,0 +1,48 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #9146FF; /* Couleur de Twitch */
+    padding: 10px;
+  }
+  
+  .twitch-logo {
+    width: 40px;
+    margin-right: 10px;
+  }
+  
+  h1 {
+    color: white;
+    margin: 0;
+  }
+  
+  input {
+    margin-left: auto;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .browse-link {
+    margin-left: 20px;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .browse-link:hover {
+    text-decoration: underline;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 5px 0;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #9146FF;
+  }
+  

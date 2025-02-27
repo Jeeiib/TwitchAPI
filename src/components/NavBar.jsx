@@ -1,45 +1,67 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import twitchLogo from './twitch-logo.png'; // Assurez-vous d'avoir ce fichier dans votre projet
+import './Navbar.css';
 
-function navbar() {
+const Navbar = () => {
+  const [search, setSearch] = useState('');
+  const [streamers, setStreamers] = useState([]);
+
+  useEffect(() => {
+    const fetchStreamers = async () => {
+      if (search.trim() === '') return;
+      try {
+        const clientId = 'VOTRE_CLIENT_ID';
+        const clientSecret = 'VOTRE_CLIENT_SECRET';
+
+        //Token d'accès
+        const tokenResponse = await axios.post(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`);
+        const accessToken = tokenResponse.data.access_token;
+
+        //Obtenir les streamers
+        const response = await axios.get(`https://api.twitch.tv/helix/search/channels?query=${search}`, {
+          headers: {
+            'Client-ID': clientId,
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+        setStreamers(response.data.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des streamers:', error);
+      }
+    };
+
+    fetchStreamers();
+  }, [search]);
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
   return (
-    <>
-      <Navbar bg="dark" data-bs-theme="dark">
-        <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar>
-      <br />
-      <Navbar bg="primary" data-bs-theme="dark">
-        <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar>
+    <nav>
+      <div className="navbar">
+        <img src={twitchLogo} alt="Twitch Logo" className="twitch-logo" />
+        <h1>Twitch Streamers</h1>
+        <input
+          type="text"
+          placeholder="Recherche des streamers..."
+          value={search}
+          onChange={handleSearch}
+        />
+        <a href="/browse" className="browse-link">Parcourir</a>
 
-      <br />
-      <Navbar bg="light" data-bs-theme="light">
-        <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar>
-    </>
+      </div>
+      <ul>
+        {streamers.map((streamer) => (
+          <li key={streamer.id}>
+            <a href={`https://www.twitch.tv/${streamer.display_name}`} target="_blank" rel="noopener noreferrer">
+              {streamer.display_name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
-}
+};
 
-export default ColorSchemesExample;
