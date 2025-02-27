@@ -1,3 +1,5 @@
+/* Solution avec scope limité aux stream cards */
+
 .recommended-streams h3 {
   font-size: 24px;
   color: white;
@@ -8,60 +10,50 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  /* Permet de défiler horizontalement si nécessaire */
- margin:0 -5px;
- padding: 10px 0;
-  /* Espace pour la barre de défilement */
+  margin: 0 -5px;
+  padding: 10px 0;
 }
 
 .recommended-streams .col-md-3 {
   flex: 0 0 auto;
   width: 25%;
-  /* Exactement 4 colonnes */
   padding: 5px;
 }
 
-.stream-card-wrapper {
+.recommended-streams .stream-card-wrapper {
   position: relative;
   padding: 6px;
-  /* Espace pour l'ombre */
   height: 100%;
 }
 
-.stream-card {
+.recommended-streams .stream-card {
   background-color: #18181b;
   border: none;
   transition: transform 0.2s ease;
   height: 100%;
   margin-bottom: 0;
-  /* Éviter les marges supplémentaires */
 }
 
-.stream-card:hover {
+.recommended-streams .stream-card:hover {
   transform: translateY(-5px);
   box-shadow:
     0 -5px 15px rgba(145, 71, 255, 0.5),
-    /* Ombre vers le haut */
     0 5px 15px rgba(145, 71, 255, 0.5),
-    /* Ombre vers le bas */
     -5px 0 15px rgba(145, 71, 255, 0.3),
-    /* Ombre vers la gauche */
     5px 0 15px rgba(145, 71, 255, 0.3);
-  /* Ombre vers la droite */
   z-index: 5;
 }
 
-.stream-info {
+.recommended-streams .stream-info {
   color: white;
   padding: 10px;
-  /* Ajouter un peu de padding interne */
 }
 
-.overflow-fix {
+.recommended-streams .overflow-fix {
   overflow: visible !important;
 }
 
-.stream-title {
+.recommended-streams .stream-title {
   font-weight: 600;
   margin-bottom: 6px;
   white-space: nowrap;
@@ -70,34 +62,31 @@
   color: #efeff1;
 }
 
-.stream-user {
+.recommended-streams .stream-user {
   font-weight: 500;
   color: #a970ff;
   margin-bottom: 4px;
 }
 
-.stream-game {
+.recommended-streams .stream-game {
   font-size: 14px;
   color: #adadb8;
   margin-bottom: 4px;
 }
 
-.stream-viewers {
+.recommended-streams .stream-viewers {
   font-size: 14px;
   color: #adadb8;
 }
 
-.card-img-top {
+.recommended-streams .card-img-top {
   width: 100%;
   height: 248px;
-  /* Hauteur fixe pour toutes les images */
   object-fit: cover;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   image-rendering: -webkit-optimize-contrast;
-  /* Améliore la netteté sur Chrome */
   image-rendering: crisp-edges;
-  /* Améliore la netteté sur Firefox */
 }
 
 /* Cacher la barre de défilement mais permettre le défilement */
@@ -114,20 +103,20 @@
   background-color: #18181b;
 }
 
-.thumbnail-container {
+.recommended-streams .thumbnail-container {
   position: relative;
   overflow: hidden;
   height: 248px;
   background-color: #0e0e10;
 }
 
-.preview-container {
+.recommended-streams .preview-container {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-.preview-overlay {
+.recommended-streams .preview-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -142,27 +131,12 @@
   transition: opacity 0.3s ease;
 }
 
-
-.preview-container:hover .preview-overlay {
+.recommended-streams .preview-container:hover .preview-overlay {
   opacity: 1;
   cursor: pointer;
 }
 
-
-
-.viewer-badge {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.viewer-badge {
+.recommended-streams .viewer-badge {
   position: absolute;
   bottom: 8px;
   left: 8px;
@@ -175,24 +149,16 @@
 }
 
 /* S'assurer que les cartes ont une hauteur fixe */
-.stream-card {
+.recommended-streams .stream-card {
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-
-.card-img-top {
-  width: 100%;
-  height: 248px;
-  object-fit: cover;
 }
 
 /* Style pour les écrans de moins de 768px */
 @media (max-width: 767px) {
   .recommended-streams .col-md-3 {
     width: 80%;
-    /* Sur mobile, montrer une carte plus large */
   }
 }
 
@@ -200,6 +166,5 @@
 @media (min-width: 768px) and (max-width: 991px) {
   .recommended-streams .col-md-3 {
     width: 50%;
-    /* Sur tablette, montrer 2 cartes par ligne */
   }
 }
