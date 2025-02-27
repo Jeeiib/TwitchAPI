@@ -162,7 +162,6 @@ export const getStreamsByGame = async (gameId, pagination = "") => {
   }
 };
 
-// ... code existant ...
 
 // Fonction pour récupérer les informations détaillées d'un streamer
 export const getStreamerInfo = async (streamerLogin) => {
@@ -200,6 +199,17 @@ export const getStreamerInfo = async (streamerLogin) => {
   } catch (error) {
     console.error("Erreur lors de la récupération des informations du streamer:", error);
     throw error;
+  }
+};
+
+// Récupérer les streams recommandés pour un jeu spécifique
+export const getRecommendedStreamsByGame = async (gameId, limit = 4) => {
+  try {
+    const response = await twitchApi.get(`streams?game_id=${gameId}&first=${limit}`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des streams recommandés:", error);
+    return [];
   }
 };
 
