@@ -1,8 +1,11 @@
 // src/components/StreamerCard.js
 import React from "react";
 import { Badge, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-function StreamerCard({ name, thumbnailUrl, viewers, categories, small }) {
+function StreamerCard({ name, thumbnailUrl, viewers, categories, small, user_login }) {
+
+  const streamerLogin = user_login || name.toLowerCase().replace(/\s/g, "");
   // Formater l'URL de la thumbnail du stream avec des dimensions fixes
   const formattedThumbnailUrl = thumbnailUrl
     ? thumbnailUrl
@@ -26,6 +29,10 @@ function StreamerCard({ name, thumbnailUrl, viewers, categories, small }) {
   };
 
   return (
+
+    <Link to={`/streamer/${streamerLogin}`} style={{ textDecoration: 'none' }}>
+      
+
     <Card
       className={small ? "h-100 small-card" : "h-100"}
       style={{ ...cardStyle, ...hoverStyle }}
@@ -75,6 +82,7 @@ function StreamerCard({ name, thumbnailUrl, viewers, categories, small }) {
         </div>
       </Card.Body>
     </Card>
+    </Link>
   );
 }
 

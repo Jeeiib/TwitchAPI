@@ -40,7 +40,7 @@ const CarouselTopStream = () => {
     // Gérer le changement de slide et activer le son
     const handleSelect = (selectedIndex) => {
         setIndex(selectedIndex);
-        
+
         // Désactiver le son de tous les iframes
         iframeRefs.current.forEach((ref, i) => {
             if (ref && ref.current) {
@@ -59,7 +59,7 @@ const CarouselTopStream = () => {
                 }
             }
         });
-        
+
         // Activer le son de l'iframe actif
         if (iframeRefs.current[selectedIndex] && iframeRefs.current[selectedIndex].current) {
             const iframe = iframeRefs.current[selectedIndex].current;
@@ -76,34 +76,34 @@ const CarouselTopStream = () => {
     };
 
     return (
-        <Container fluid style={{ 
-            backgroundColor: "#0e0e10", 
-            color: 'white', 
-            width: '100vw', 
+        <Container fluid style={{
+            backgroundColor: "#0e0e10",
+            color: 'white',
+            width: '100vw',
             padding: '0',
             margin: '0',
             maxWidth: '100%'
         }}>
             {loading ? (
                 <div className="text-center">
-                <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Chargement...</span>
-                </Spinner>
-              </div>
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Chargement...</span>
+                    </Spinner>
+                </div>
             ) : (
-                <Carousel 
-                    fade 
+                <Carousel
+                    fade
                     activeIndex={index}
                     onSelect={handleSelect}
-                    interval={null} 
+                    interval={null}
                 >
                     {error ? (
                         <Carousel.Item>
-                            <div style={{ 
-                                display: 'flex', 
-                                justifyContent: 'center', 
-                                alignItems: 'center', 
-                                height: '90vh' 
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '90vh'
                             }}>
                                 <p>{error}</p>
                             </div>
@@ -111,11 +111,11 @@ const CarouselTopStream = () => {
                     ) : topStreamers.length > 0 ? (
                         topStreamers.map((streamer, idx) => (
                             <Carousel.Item key={idx}>
-                                <div style={{ 
-                                    display: 'flex', 
-                                    justifyContent: 'center', 
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
                                     alignItems: 'center',
-                                    height: '90vh' 
+                                    height: '90vh'
                                 }}>
                                     <iframe
                                         ref={el => iframeRefs.current[idx] = el}
@@ -128,15 +128,15 @@ const CarouselTopStream = () => {
                                         className='mb-5'
                                     />
                                 </div>
-                                
+
                             </Carousel.Item>
                         ))
                     ) : (
                         <Carousel.Item>
-                            <div style={{ 
-                                display: 'flex', 
-                                justifyContent: 'center', 
-                                alignItems: 'center', 
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                                 height: '90vh' // Utilise 90% de la hauteur de la fenêtre
                             }}>
                                 <p>Aucun streamer en direct pour le moment...</p>
