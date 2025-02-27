@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import '../pages/StreamerPage.css'; // Créez ce fichier CSS
 
 const StreamerPage = () => {
     const { streamerName } = useParams();
@@ -36,31 +37,33 @@ const StreamerPage = () => {
     
     return (
         <div className="streamer-page">
-            <h1>Stream de {streamerInfo?.username}</h1>
+            <h1 className="stream-title">Stream de {streamerInfo?.username}</h1>
             
-            <div className="stream-container">
-                {streamerName && (
-                    <iframe 
-                        src={`https://player.twitch.tv/?channel=${streamerName}&parent=${window.location.hostname}`}
-                        height="720"
-                        width="1280"
-                        allowFullScreen={true}
-                        frameBorder="0"
-                        title={`Stream de ${streamerName}`}
-                    ></iframe>
-                )}
-            </div>
-            
-            <div className="chat-container">
-                {streamerName && (
-                    <iframe 
-                        src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${window.location.hostname}`}
-                        height="720"
-                        width="350"
-                        frameBorder="0"
-                        title={`Chat de ${streamerName}`}
-                    ></iframe>
-                )}
+            <div className="stream-layout">
+                <div className="stream-container">
+                    {streamerName && (
+                        <iframe 
+                            src={`https://player.twitch.tv/?channel=${streamerName}&parent=${window.location.hostname}`}
+                            height="720"
+                            width="100%"
+                            allowFullScreen={true}
+                            frameBorder="0"
+                            title={`Stream de ${streamerName}`}
+                        ></iframe>
+                    )}
+                </div>
+                
+                <div className="chat-container">
+                    {streamerName && (
+                        <iframe 
+                            src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${window.location.hostname}`}
+                            height="720"
+                            width="100%"
+                            frameBorder="0"
+                            title={`Chat de ${streamerName}`}
+                        ></iframe>
+                    )}
+                </div>
             </div>
         </div>
     );
