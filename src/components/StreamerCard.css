@@ -1,0 +1,12 @@
+/* src/components/StreamerCard.css */
+.streamer-card {
+    background-color: #18181B;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .streamer-card.hovered {
+    transform: scale(1.05); /* Zoom léger de 5% */
+    box-shadow: 0 0 15px #9147FF, 0 5px 15px rgba(145, 71, 255, 0.5); /* Ombre néon violet + effet doux */
+  }

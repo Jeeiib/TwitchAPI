@@ -13,7 +13,7 @@ function Parcourir() {
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationCursor, setPaginationCursor] = useState("");
   const [hasMore, setHasMore] = useState(true);
-  const [selectedOption, setSelectedOption] = useState(null); // État pour l'option sélectionnée (tag ou recherche texte)
+  const [selectedOption, setSelectedOption] = useState(null); // État pour l'option sélectionnée (tag ou jeu)
   const gamesPerPage = 48;
 
   // Extraire tous les tags uniques de predefinedGameCategories
@@ -23,8 +23,12 @@ function Parcourir() {
       .filter(tag => tag !== "default" && tag !== "Jeux vidéo") // Exclure les tags par défaut
   )].sort(); // Trier alphabétiquement
 
+  // Extraire tous les noms de jeux uniques
+  const allGameNames = [...new Set(games.map((game) => game.name))].sort();
+
   const options = [
-    { label: "Rechercher un tag ou taper un jeu...", value: "", type: "default" },
+    { label: "Rechercher un tag ou un jeu...", value: "", type: "default" },
+    ...allGameNames.map((name) => ({ label: name, value: name, type: "game" })),
     ...allTags.map((tag) => ({ label: tag, value: tag, type: "tag" })),
   ];
 
@@ -127,9 +131,9 @@ function Parcourir() {
 
   // Filtrer les jeux par nom (recherche texte) ou tag sélectionné
   const filteredGames = selectedOption
-    ? selectedOption.type === "tag"
-      ? games.filter((game) => game.categories.includes(selectedOption.value))
-      : games.filter((game) => game.name.toLowerCase().includes(selectedOption.value.toLowerCase()))
+    ? selectedOption.type === "game"
+      ? games.filter((game) => game.name.toLowerCase() === selectedOption.value.toLowerCase())
+      : games.filter((game) => game.categories.includes(selectedOption.value))
     : games;
 
   const currentGames = filteredGames.slice(indexOfFirstGame, indexOfLastGame);
