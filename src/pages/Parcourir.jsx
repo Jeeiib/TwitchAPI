@@ -6,16 +6,14 @@ import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import predefinedGameCategories from "../services/gameCategories";
 import Select from "react-select"; // Importer react-select
-import { useSidebar } from "../context/SidebarContext"; // Importer useSidebar
 
 function Parcourir() {
-  const { isSidebarHovered } = useSidebar(); // Accéder à isSidebarHovered via le contexte
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationCursor, setPaginationCursor] = useState("");
   const [hasMore, setHasMore] = useState(true);
-  const [selectedOption, setSelectedOption] = useState(null); // État pour l'option sélectionnée (tag ou jeu)
+  const [selectedOption, setSelectedOption] = useState(null); // État pour l'option sélectionnée (tag ou recherche texte)
   const gamesPerPage = 48;
 
   // Extraire tous les tags uniques de predefinedGameCategories
@@ -25,12 +23,8 @@ function Parcourir() {
       .filter(tag => tag !== "default" && tag !== "Jeux vidéo") // Exclure les tags par défaut
   )].sort(); // Trier alphabétiquement
 
-  // Extraire tous les noms de jeux uniques
-  const allGameNames = [...new Set(games.map((game) => game.name))].sort();
-
   const options = [
-    { label: "Rechercher un tag ou un jeu...", value: "", type: "default" },
-    ...allGameNames.map((name) => ({ label: name, value: name, type: "game" })),
+    { label: "Rechercher un tag ou taper un jeu...", value: "", type: "default" },
     ...allTags.map((tag) => ({ label: tag, value: tag, type: "tag" })),
   ];
 
@@ -133,9 +127,9 @@ function Parcourir() {
 
   // Filtrer les jeux par nom (recherche texte) ou tag sélectionné
   const filteredGames = selectedOption
-    ? selectedOption.type === "game"
-      ? games.filter((game) => game.name.toLowerCase() === selectedOption.value.toLowerCase())
-      : games.filter((game) => game.categories.includes(selectedOption.value))
+    ? selectedOption.type === "tag"
+      ? games.filter((game) => game.categories.includes(selectedOption.value))
+      : games.filter((game) => game.name.toLowerCase().includes(selectedOption.value.toLowerCase()))
     : games;
 
   const currentGames = filteredGames.slice(indexOfFirstGame, indexOfLastGame);
@@ -281,7 +275,7 @@ function Parcourir() {
   };
 
   return (
-    <Container fluid className="px-2 py-4" style={{ marginLeft: isSidebarHovered ? "300px" : "70px", transition: "margin-left 0.3s ease"}}>
+    <Container fluid className="px-2 py-4">
       {/* Ligne avec titre à gauche et Select centré */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1

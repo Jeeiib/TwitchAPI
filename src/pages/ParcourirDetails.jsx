@@ -5,10 +5,8 @@ import { getStreamsByGame, getGameNameById } from "../services/twitchService";
 import StreamerCard from "../components/StreamerCard";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useSidebar } from "../context/SidebarContext"; // Importer useSidebar
 
 function ParcourirDetails() {
-  const { isSidebarHovered } = useSidebar(); // Accéder à isSidebarHovered via le contexte
   const { gameId } = useParams();
   const [streamers, setStreamers] = useState([]);
   const [gameName, setGameName] = useState("");
@@ -30,10 +28,11 @@ function ParcourirDetails() {
         setGameName(name);
 
         const { data, pagination } = await getStreamsByGame(gameId);
-        console.log("Initial streams:", data.length, "Pagination:", pagination);
+        console.log("Initial streams loaded:", data.length, "Pagination:", pagination);
         setStreamers(data);
         setPaginationCursor(pagination);
         setHasMore(!!pagination);
+        console.log("Has more after initial load:", !!pagination);
       } catch (error) {
         console.error("Erreur lors de la récupération initiale :", error);
       } finally {
@@ -44,17 +43,26 @@ function ParcourirDetails() {
   }, [gameId]);
 
   const loadMoreStreamers = async () => {
-    if (!hasMore || loading) return;
+    if (!hasMore || loading) {
+      console.log("loadMoreStreamers skipped: hasMore=", hasMore, "loading=", loading);
+      return;
+    }
     setLoading(true);
     try {
       console.log("Loading more with cursor:", paginationCursor);
       const { data, pagination } = await getStreamsByGame(gameId, paginationCursor);
-      console.log("Additional streams:", data.length, "New pagination:", pagination);
-      setStreamers((prev) => [...prev, ...data]);
+      console.log("Additional streams loaded:", data.length, "New pagination:", pagination);
+      setStreamers((prev) => {
+        const newStreamers = [...prev, ...data];
+        console.log("Total streams after load:", newStreamers.length);
+        return newStreamers;
+      });
       setPaginationCursor(pagination);
       setHasMore(!!pagination);
+      console.log("Has more after load:", !!pagination);
     } catch (error) {
       console.error("Erreur lors du chargement des streams suivants :", error);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
@@ -65,24 +73,38 @@ function ParcourirDetails() {
   const currentStreamers = streamers.slice(indexOfFirstStreamer, indexOfLastStreamer);
   const totalPages = Math.ceil(streamers.length / streamersPerPage);
 
+  // Charger plus si la page actuelle est incomplète et qu'il reste des streams
+  useEffect(() => {
+    if (currentStreamers.length < streamersPerPage && hasMore && !loading) {
+      console.log("Page incomplete, triggering loadMoreStreamers");
+      loadMoreStreamers();
+    }
+  }, [currentStreamers, hasMore, loading]);
+
+  console.log("Current page:", currentPage, "Total pages:", totalPages, "Current streamers:", currentStreamers.length);
+
   const handlePrevious = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      console.log("Navigated to previous page:", currentPage - 1);
+    }
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < totalPages || (currentStreamers.length < streamersPerPage && hasMore)) {
       setCurrentPage(currentPage + 1);
+      console.log("Navigated to next page:", currentPage + 1);
     } else if (hasMore) {
       setCurrentPage(currentPage + 1);
       loadMoreStreamers();
+      console.log("Triggered loadMoreStreamers for page:", currentPage + 1);
     }
   };
 
   const handlePageClick = (page) => {
-    if (page <= totalPages) {
-      setCurrentPage(page);
-    } else if (hasMore) {
-      setCurrentPage(page);
+    console.log("Page clicked:", page);
+    setCurrentPage(page);
+    if (page > totalPages && hasMore) {
       loadMoreStreamers();
     }
   };
@@ -129,8 +151,8 @@ function ParcourirDetails() {
   });
 
   return (
-    <Container fluid className="px-2 py-4" style={{ marginLeft: isSidebarHovered ? "300px" : "70px", transition: "margin-left 0.3s ease"}}>
-      <h1 className="text-center mb-3 text-white" style={{ fontSize: "50px" }}>{gameName || "Chargement..."}</h1>
+    <Container fluid className="px-2 py-4">
+      <h1 className="mb-3 text-white fw-bold" style={{fontSize: "50px"}}>{gameName || "Chargement..."}</h1>
       {loading && streamers.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
@@ -147,7 +169,8 @@ function ParcourirDetails() {
                   thumbnailUrl={streamer.thumbnail_url}
                   viewers={streamer.viewer_count}
                   categories={[streamer.game_name]}
-                  user_login={streamer.user_login}
+                  streamerLogin={streamer.user_login}
+
                 />
               </Col>
             ))}
@@ -167,8 +190,12 @@ function ParcourirDetails() {
                 key={number}
                 style={pageNumberStyle(number === currentPage)}
                 onClick={() => handlePageClick(number)}
-                onMouseOver={(e) => number !== currentPage && (e.target.style.backgroundColor = "#A970FF")}
-                onMouseOut={(e) => number !== currentPage && (e.target.style.backgroundColor = "#2A2A2E")}
+                onMouseOver={(e) =>
+                  number !== currentPage && (e.target.style.backgroundColor = "#A970FF")
+                }
+                onMouseOut={(e) =>
+                  number !== currentPage && (e.target.style.backgroundColor = "#2A2A2E")
+                }
               >
                 {number}
               </span>
@@ -177,8 +204,12 @@ function ParcourirDetails() {
               style={!hasMore && currentPage === totalPages ? disabledButtonStyle : buttonStyle}
               onClick={handleNext}
               disabled={!hasMore && currentPage === totalPages}
-              onMouseOver={(e) => !(!hasMore && currentPage === totalPages) && (e.target.style.backgroundColor = "#A970FF")}
-              onMouseOut={(e) => !(!hasMore && currentPage === totalPages) && (e.target.style.backgroundColor = "#9147FF")}
+              onMouseOver={(e) =>
+                !(!hasMore && currentPage === totalPages) && (e.target.style.backgroundColor = "#A970FF")
+              }
+              onMouseOut={(e) =>
+                !(!hasMore && currentPage === totalPages) && (e.target.style.backgroundColor = "#9147FF")
+              }
             >
               Suivant
             </button>
