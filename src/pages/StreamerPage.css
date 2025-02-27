@@ -1,36 +1,109 @@
 .streamer-page {
-    width: 100%;
     max-width: 1800px;
     margin: 0 auto;
     padding: 20px;
-  }
-  
-  .stream-title {
-    text-align: center;
-    margin-bottom: 20px;
+    color: white;
   }
   
   .stream-layout {
     display: flex;
-    flex-direction: row;
     gap: 20px;
-    width: 100%;
   }
   
   .stream-container {
     flex: 1;
     min-width: 0;
-    /* Assure que le stream est plus large que le chat */
-    flex-basis: 75%;
   }
   
   .chat-container {
     width: 350px;
-    /* Largeur fixe pour le chat */
     min-width: 350px;
   }
   
-  /* Pour les écrans plus petits */
+  .streamer-info {
+    background-color: #18181b;
+    border-radius: 6px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .streamer-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .streamer-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-right: 16px;
+    border: 2px solid #9147ff;
+  }
+  
+  .streamer-name {
+    font-size: 24px;
+    margin: 0 0 4px 0;
+  }
+  
+  .stream-title {
+    font-size: 16px;
+    margin: 8px 0 0 0;
+    font-weight: normal;
+    color: #dedee3;
+  }
+  
+  .live-indicator {
+    display: inline-block;
+    background-color: #e91916;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  
+  .streamer-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: #adadb8;
+  }
+  
+  .streamer-bio {
+    line-height: 1.5;
+    color: #dedee3;
+  }
+  
+  .loading-container, .error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    font-size: 18px;
+  }
+  
+  .error-container {
+    color: #ff5e5e;
+  }
+  
+  /* Responsive design pour les écrans plus petits */
   @media (max-width: 1200px) {
     .stream-layout {
       flex-direction: column;

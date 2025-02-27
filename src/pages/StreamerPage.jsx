@@ -1,27 +1,25 @@
 import { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import '../pages/StreamerPage.css'; // Créez ce fichier CSS
+import { useParams } from 'react-router-dom';
+import { getStreamerInfo } from '../services/twitchService';
+import '../pages/StreamerPage.css';
 
 const StreamerPage = () => {
     const { streamerName } = useParams();
-    const location = useLocation();
     const [streamerInfo, setStreamerInfo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     
     useEffect(() => {
         const fetchStreamerInfo = async () => {
             try {
                 setIsLoading(true);
-                // Si vous avez besoin de données supplémentaires du streamer, vous pouvez faire une requête API ici
-                // const response = await axios.get(`votre-endpoint-api/${streamerName}`);
-                // setStreamerInfo(response.data);
-                
-                // Pour l'exemple, on utilise directement le nom du streamer
-                setStreamerInfo({ username: streamerName });
+                const data = await getStreamerInfo(streamerName);
+                console.log("Données du streamer récupérées:", data);
+                setStreamerInfo(data);
                 setIsLoading(false);
             } catch (error) {
                 console.error("Erreur lors de la récupération des informations du streamer:", error);
+                setError("Impossible de charger les informations du streamer");
                 setIsLoading(false);
             }
         };
@@ -32,13 +30,15 @@ const StreamerPage = () => {
     }, [streamerName]);
     
     if (isLoading) {
-        return <div>Chargement du stream...</div>;
+        return <div className="loading-container">Chargement du stream...</div>;
+    }
+    
+    if (error) {
+        return <div className="error-container">{error}</div>;
     }
     
     return (
         <div className="streamer-page">
-            <h1 className="stream-title">Stream de {streamerInfo?.username}</h1>
-            
             <div className="stream-layout">
                 <div className="stream-container">
                     {streamerName && (
@@ -50,6 +50,55 @@ const StreamerPage = () => {
                             frameBorder="0"
                             title={`Stream de ${streamerName}`}
                         ></iframe>
+                    )}
+                    
+                    {/* Section d'informations du streamer */}
+                    {streamerInfo && (
+                        <div className="streamer-info">
+                            <div className="streamer-header">
+                                <img 
+                                    src={streamerInfo.profile_image_url} 
+                                    alt={`${streamerInfo.display_name} avatar`} 
+                                    className="streamer-avatar" 
+                                />
+                                <div className="streamer-titles">
+                                    <h2 className="streamer-name">{streamerInfo.display_name}</h2>
+                                    {streamerInfo.isLive && (
+                                        <div className="live-indicator">EN DIRECT</div>
+                                    )}
+                                    {streamerInfo.stream?.title && (
+                                        <h3 className="stream-title">{streamerInfo.stream.title}</h3>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="streamer-stats">
+                                {streamerInfo.stream?.viewer_count && (
+                                    <div className="stat-item">
+                                        <span className="stat-value">{streamerInfo.stream.viewer_count.toLocaleString()}</span>
+                                        <span className="stat-label">spectateurs</span>
+                                    </div>
+                                )}
+                                {streamerInfo.view_count && (
+                                    <div className="stat-item">
+                                        <span className="stat-value">{streamerInfo.view_count.toLocaleString()}</span>
+                                        <span className="stat-label">vues totales</span>
+                                    </div>
+                                )}
+                                {streamerInfo.stream?.game_name && (
+                                    <div className="stat-item">
+                                        <span className="stat-value">{streamerInfo.stream.game_name}</span>
+                                        <span className="stat-label">jeu</span>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {streamerInfo.description && (
+                                <div className="streamer-bio">
+                                    <p>{streamerInfo.description}</p>
+                                </div>
+                            )}
+                        </div>
                     )}
                 </div>
                 
