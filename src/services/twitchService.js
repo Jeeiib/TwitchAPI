@@ -192,7 +192,9 @@ export const getStreamerInfo = async (streamerLogin) => {
       channel: channelData,
       stream: streamData,
       isLive: !!streamData,
+      followers: userData?.followers || 0,
       // followers: followerCount
+      tags: streamData?.tags || channelData?.tags || []
     };
     
   } catch (error) {
