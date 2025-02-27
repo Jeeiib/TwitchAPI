@@ -60,6 +60,9 @@ const StreamerPage = () => {
                                     src={streamerInfo.profile_image_url}
                                     alt={`${streamerInfo.display_name} avatar`}
                                     className="streamer-avatar"
+                                    loading="lazy"
+                                    width="64"
+                                    height="64"
                                 />
                                 <div className="streamer-titles">
                                     <h2 className="streamer-name">{streamerInfo.display_name}</h2>
@@ -108,7 +111,7 @@ const StreamerPage = () => {
                                     <p>{streamerInfo.description}</p>
                                 </div>
                             )}
-                           
+                             
 
                         </div>
                     )}
