@@ -61,7 +61,7 @@ function Parcourir() {
 
   return (
     <Container fluid className='px-2, py-4'>
-      <h1 className="text-center mb-3">Parcourir les Top Jeux</h1>
+      <h1 className="text-center mb-3">Parcourir les Jeux</h1>
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
