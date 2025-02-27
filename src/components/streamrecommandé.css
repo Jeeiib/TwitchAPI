@@ -116,17 +116,13 @@
     transition: opacity 0.3s ease;
   }
   
+  
   .preview-container:hover .preview-overlay {
     opacity: 1;
+    cursor: pointer;
   }
   
-  .preview-overlay span {
-    background-color: rgba(145, 71, 255, 0.8);
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-weight: bold;
-  }
-  
+ 
   
   .viewer-badge {
     position: absolute;

@@ -52,16 +52,6 @@ const RecommendedStreams = ({ gameId, gameTitle, limit = 4 }) => {
         setHoveredStream(null);
     };
 
-
-
-    if (loading) {
-        return (
-            <div className="text-center my-4">
-                <Spinner animation="border" variant="primary" />
-            </div>
-        );
-    }
-
     if (error) {
         return <div className="text-danger text-center my-4">{error}</div>;
     }
@@ -81,16 +71,31 @@ const RecommendedStreams = ({ gameId, gameTitle, limit = 4 }) => {
                                 onMouseEnter={() => handleMouseEnter(stream.id)}
                                 onMouseLeave={handleMouseLeave}>
                                 <div className="thumbnail-container">
-                                    <Card.Img
-                                        variant="top"
-                                        src={formatThumbnailUrl(stream.thumbnail_url)}
-                                        alt={`Stream de ${stream.user_name}`}
-                                        loading="lazy"
-                                    />
-                                    {stream.viewer_count && (
-                                        <div className="viewer-badge">
-                                            <span>🔴 {stream.viewer_count.toLocaleString()}</span>
+                                    {hoveredStream === stream.id ? (
+                                        <div className="preview-container">
+                                            <iframe
+                                                src={`https://player.twitch.tv/?channel=${stream.user_login}&parent=${window.location.hostname}&muted=true&autoplay=true&controls=false`}
+                                                height="248"
+                                                width="100%"
+                                                allowFullScreen={false}
+                                                frameBorder="0"
+                                                title={`Preview de ${stream.user_name}`}
+                                            ></iframe>
                                         </div>
+                                    ) : (
+                                        <>
+                                            <Card.Img
+                                                variant="top"
+                                                src={formatThumbnailUrl(stream.thumbnail_url)}
+                                                alt={`Stream de ${stream.user_name}`}
+                                                loading="lazy"
+                                            />
+                                            {stream.viewer_count && (
+                                                <div className="viewer-badge">
+                                                    <span>🔴 {stream.viewer_count.toLocaleString()}</span>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                                 <Card.Body>
