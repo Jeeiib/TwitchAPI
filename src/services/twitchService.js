@@ -162,4 +162,46 @@ export const getStreamsByGame = async (gameId, pagination = "") => {
   }
 };
 
+// ... code existant ...
+
+// Fonction pour récupérer les informations détaillées d'un streamer
+export const getStreamerInfo = async (streamerLogin) => {
+  try {
+    // Récupérer les informations de base du streamer
+    const userResponse = await twitchApi.get(`users?login=${streamerLogin}`);
+    
+    if (!userResponse.data.data || userResponse.data.data.length === 0) {
+      throw new Error("Streamer non trouvé");
+    }
+    
+    const userData = userResponse.data.data[0];
+    
+    // Récupérer les informations du stream actuel s'il est en direct
+    const streamResponse = await twitchApi.get(`streams?user_login=${streamerLogin}`);
+    const streamData = streamResponse.data.data[0] || null;
+    
+    // Récupérer les informations du channel
+    const channelResponse = await twitchApi.get(`channels?broadcaster_id=${userData.id}`);
+    const channelData = channelResponse.data.data[0] || {};
+    
+  
+    
+    // Combiner toutes les données
+    return {
+      ...userData,
+      channel: channelData,
+      stream: streamData,
+      isLive: !!streamData,
+      // followers: followerCount
+    };
+    
+  } catch (error) {
+    console.error("Erreur lors de la récupération des informations du streamer:", error);
+    throw error;
+  }
+};
+
+
+
+
 export default twitchApi;
