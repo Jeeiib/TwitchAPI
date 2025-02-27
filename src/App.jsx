@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import Parcourir from "./pages/Parcourir";
 import ParcourirDetails from './pages/ParcourirDetails';
+import StreamerPage from './pages/StreamerPage';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/parcourir" element={<Parcourir />} />
           <Route path="/parcourir/:gameId" element={<ParcourirDetails />} />
+          <Route path="/streamer/:streamerName" element={<StreamerPage />} />
         </Routes>
       </BrowserRouter>
       

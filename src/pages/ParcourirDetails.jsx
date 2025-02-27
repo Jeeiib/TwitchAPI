@@ -169,6 +169,8 @@ function ParcourirDetails() {
                   thumbnailUrl={streamer.thumbnail_url}
                   viewers={streamer.viewer_count}
                   categories={[streamer.game_name]}
+                  streamerLogin={streamer.user_login}
+
                 />
               </Col>
             ))}
