@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,13 +12,14 @@ function NavBar() {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1); // Index de l'élément sélectionné (-1 = aucun)
   const navigate = useNavigate();
+  const inputRef = useRef(null); // Référence pour garder le focus sur l'input
 
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
   };
 
-  // Fonction commune pour lancer la recherche (utilisée par clic et Entrée)
   const handleSearch = () => {
     if (searchInput.trim()) {
       const results = mockStreamers.filter((streamer) =>
@@ -27,30 +28,52 @@ function NavBar() {
       console.log("Résultats trouvés :", results);
       setSearchResults(results);
       setShowResults(true);
+      setSelectedIndex(-1); // Réinitialise la sélection
     } else {
       setShowResults(false);
+      setSelectedIndex(-1);
     }
   };
 
-  // Lancer la recherche avec la touche Entrée
+  // Gestion des touches (Entrée et flèches)
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Empêche le comportement par défaut (soumission de formulaire)
-      handleSearch();
+      e.preventDefault();
+      if (showResults && selectedIndex >= 0) {
+        // Si un élément est sélectionné, redirige vers sa page
+        const selectedStreamer = searchResults[selectedIndex];
+        navigate(`/streamer/${selectedStreamer.name}`);
+        setShowResults(false);
+        setSearchInput('');
+        setSelectedIndex(-1);
+      } else {
+        // Sinon, lance la recherche
+        handleSearch();
+      }
+    } else if (e.key === 'ArrowDown' && showResults) {
+      e.preventDefault();
+      // Déplace la sélection vers le bas
+      setSelectedIndex((prev) =>
+        prev < searchResults.length - 1 ? prev + 1 : prev
+      );
+    } else if (e.key === 'ArrowUp' && showResults) {
+      e.preventDefault();
+      // Déplace la sélection vers le haut
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
     }
   };
 
-  // Clic sur la loupe
   const handleSearchClick = () => {
     handleSearch();
+    if (inputRef.current) inputRef.current.focus(); // Remet le focus sur l'input
   };
 
-  // Redirection vers StreamerPage
   const handleResultClick = (streamerName) => {
     console.log("Navigation vers :", `/streamer/${streamerName}`);
     navigate(`/streamer/${streamerName}`);
     setShowResults(false);
     setSearchInput('');
+    setSelectedIndex(-1);
   };
 
   return (
@@ -64,16 +87,17 @@ function NavBar() {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/parcourir">Parcourir</Nav.Link>
           </Nav>
-          <div style={{ position: "relative", maxWidth: "500px", width: "100%", marginLeft: "-100px", marginRight: "auto" }}>
+          <div style={{ position: "relative", maxWidth: "500px", width: "100%", marginLeft: "-150px", marginRight: "auto" }}>
             <Form className="d-flex">
               <FormControl
+                ref={inputRef} // Référence pour focus
                 type="search"
                 placeholder="Rechercher un streamer..."
                 className="me-2 custom-search-input"
                 aria-label="Search"
                 value={searchInput}
                 onChange={handleSearchChange}
-                onKeyDown={handleKeyDown} // Ajout de l'événement pour Entrée
+                onKeyDown={handleKeyDown} // Gestion des touches
                 style={{
                   backgroundColor: "#2A2A2E",
                   color: "white",
@@ -111,7 +135,7 @@ function NavBar() {
                   overflowY: "auto",
                 }}
               >
-                {searchResults.map((streamer) => (
+                {searchResults.map((streamer, index) => (
                   <div
                     key={streamer.id}
                     onClick={() => handleResultClick(streamer.name)}
@@ -120,9 +144,14 @@ function NavBar() {
                       color: "white",
                       cursor: "pointer",
                       borderBottom: "1px solid #3A3A3E",
+                      backgroundColor: selectedIndex === index ? "#4B367C" : "#2A2A2E", // Surlignage
                     }}
-                    onMouseEnter={(e) => (e.target.style.backgroundColor = "#4B367C")}
-                    onMouseLeave={(e) => (e.target.style.backgroundColor = "#2A2A2E")}
+                    onMouseEnter={(e) => {
+                      if (selectedIndex !== index) e.target.style.backgroundColor = "#4B367C";
+                    }}
+                    onMouseLeave={(e) => {
+                      if (selectedIndex !== index) e.target.style.backgroundColor = "#2A2A2E";
+                    }}
                   >
                     {streamer.name} ({streamer.status === "live" ? "En direct" : "Hors ligne"})
                   </div>
