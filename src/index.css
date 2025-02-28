@@ -1,1 +1,11 @@
-
+/* Supprime le hover du bouton */
+.no-hover:hover {
+    background-color: #9147FF !important;
+  }
+  
+  /* Style pour le champ de recherche en focus avec plus de spécificité */
+  input.custom-search-input:focus {
+    outline: none !important; /* Supprime le contour bleu */
+    border: 2px solid #9147FF !important; /* Ajoute un contour violet */
+    box-shadow: none !important; /* Supprime toute ombre */
+  }
