@@ -8,6 +8,7 @@ const popularGames = [
     { id: '509658', title: "Just Chatting" },
     { id: '516575', title: "VALORANT" },
     { id: '32982', title: "Grand Theft Auto V" }
+    
 ];
 
 

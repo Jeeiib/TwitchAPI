@@ -14,7 +14,27 @@ function ParcourirDetails() {
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationCursor, setPaginationCursor] = useState("");
   const [hasMore, setHasMore] = useState(true);
+  const [hoveredStream, setHoveredStream] = useState(null);
+  const [hoveredStreamer, setHoveredStreamer] = useState(null);
+  const [previewTimeout, setPreviewTimeout] = useState(null);
   const streamersPerPage = 48;
+
+
+
+  const handleMouseEnter = (streamerId) => {
+    const timeout = setTimeout(() => {
+      setHoveredStreamer(streamerId);
+    }, 500); // Délai de 500ms avant l'affichage de l'aperçu
+    setPreviewTimeout(timeout);
+  };
+
+  const handleMouseLeave = () => {
+    if (previewTimeout) {
+      clearTimeout(previewTimeout);
+    }
+    setHoveredStreamer(null);
+  };
+
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -72,6 +92,8 @@ function ParcourirDetails() {
   const indexOfLastStreamer = currentPage * streamersPerPage;
   const currentStreamers = streamers.slice(indexOfFirstStreamer, indexOfLastStreamer);
   const totalPages = Math.ceil(streamers.length / streamersPerPage);
+
+
 
   // Charger plus si la page actuelle est incomplète et qu'il reste des streams
   useEffect(() => {
@@ -152,7 +174,7 @@ function ParcourirDetails() {
 
   return (
     <Container fluid className="px-2 py-4">
-      <h1 className="mb-3 text-white fw-bold" style={{fontSize: "50px"}}>{gameName || "Chargement..."}</h1>
+      <h1 className="mb-3 text-white fw-bold" style={{ fontSize: "50px" }}>{gameName || "Chargement..."}</h1>
       {loading && streamers.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
@@ -164,14 +186,39 @@ function ParcourirDetails() {
           <Row xs={2} sm={3} md={4} lg={6} xl={8} className="g-2">
             {currentStreamers.map((streamer) => (
               <Col key={streamer.id}>
-                <StreamerCard
-                  name={streamer.user_name}
-                  thumbnailUrl={streamer.thumbnail_url}
-                  viewers={streamer.viewer_count}
-                  categories={[streamer.game_name]}
-                  streamerLogin={streamer.user_login}
-
-                />
+                <div
+                  className="position-relative"
+                  onMouseEnter={() => handleMouseEnter(streamer.id)}
+                  onMouseLeave={handleMouseLeave}>
+                  <StreamerCard
+                    name={streamer.user_name}
+                    thumbnailUrl={streamer.thumbnail_url}
+                    viewers={streamer.viewer_count}
+                    categories={[streamer.game_name]}
+                    streamerLogin={streamer.user_login}
+                  />
+                  {hoveredStreamer === streamer.id && (
+                    <div className="live-preview-container" style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "248px",
+                      borderRadius: "8px 8px 0 0",
+                      overflow: "hidden",
+                      zIndex: 100
+                    }}>
+                      <iframe
+                        src={`https://player.twitch.tv/?channel=${streamer.user_login}&parent=${window.location.hostname}&muted=true&autoplay=true&controls=false`}
+                        height="100%"
+                        width="100%"
+                        allowFullScreen={false}
+                        frameBorder="0"
+                        title={`Aperçu de ${streamer.user_name}`}
+                      ></iframe>
+                    </div>
+                  )}
+                </div>
               </Col>
             ))}
           </Row>
