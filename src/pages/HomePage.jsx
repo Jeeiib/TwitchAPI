@@ -7,8 +7,9 @@ const popularGames = [
     { id: '21779', title: "League of Legends" },
     { id: '509658', title: "Just Chatting" },
     { id: '516575', title: "VALORANT" },
-    { id: '32982', title: "Grand Theft Auto V" }
-    
+    { id: '32982', title: "Grand Theft Auto V" },
+    { id: "1286077738", title: "Monster Hunter Wild" }
+
 ];
 
 

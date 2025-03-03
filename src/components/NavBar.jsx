@@ -177,7 +177,6 @@ function NavBar() {
             )}
           </div>
           <Nav>
-            {/* Ajoute des liens ici si besoin */}
           </Nav>
         </Navbar.Collapse>
       </Container>
