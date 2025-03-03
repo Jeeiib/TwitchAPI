@@ -13,9 +13,6 @@ const popularGames = [
 ];
 
 
-
-
-
 const HomePage = () => {
     return (
         <Container fluid className="px-2 py-4">
