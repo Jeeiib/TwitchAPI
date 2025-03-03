@@ -1,15 +1,15 @@
-import { useState, useRef } from 'react';
-import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
-import Container from 'react-bootstrap/Container';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Logo from '../assets/twitchlogo.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import mockStreamers from '../services/mockStreamers';
+import { useState, useRef } from "react";
+import { Nav, Navbar, Form, FormControl, Button } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Logo from "../assets/twitchlogo.png";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import mockStreamers from "../services/mockStreamers";
 
 function NavBar() {
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index de l'élément sélectionné (-1 = aucun)
@@ -37,26 +37,26 @@ function NavBar() {
 
   // Gestion des touches (Entrée et flèches)
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       if (showResults && selectedIndex >= 0) {
         // Si un élément est sélectionné, redirige vers sa page
         const selectedStreamer = searchResults[selectedIndex];
         navigate(`/streamer/${selectedStreamer.name}`);
         setShowResults(false);
-        setSearchInput('');
+        setSearchInput("");
         setSelectedIndex(-1);
       } else {
         // Sinon, lance la recherche
         handleSearch();
       }
-    } else if (e.key === 'ArrowDown' && showResults) {
+    } else if (e.key === "ArrowDown" && showResults) {
       e.preventDefault();
       // Déplace la sélection vers le bas
       setSelectedIndex((prev) =>
         prev < searchResults.length - 1 ? prev + 1 : prev
       );
-    } else if (e.key === 'ArrowUp' && showResults) {
+    } else if (e.key === "ArrowUp" && showResults) {
       e.preventDefault();
       // Déplace la sélection vers le haut
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
@@ -72,7 +72,7 @@ function NavBar() {
     console.log("Navigation vers :", `/streamer/${streamerName}`);
     navigate(`/streamer/${streamerName}`);
     setShowResults(false);
-    setSearchInput('');
+    setSearchInput("");
     setSelectedIndex(-1);
   };
 
@@ -85,9 +85,19 @@ function NavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/parcourir">Parcourir</Nav.Link>
+            <Nav.Link as={Link} to="/parcourir">
+              Parcourir
+            </Nav.Link>
           </Nav>
-          <div style={{ position: "relative", maxWidth: "500px", width: "100%", marginLeft: "-150px", marginRight: "auto" }}>
+          <div
+            style={{
+              position: "relative",
+              maxWidth: "500px",
+              width: "100%",
+              marginLeft: "-150px",
+              marginRight: "auto",
+            }}
+          >
             <Form className="d-flex">
               <FormControl
                 ref={inputRef} // Référence pour focus
@@ -144,16 +154,20 @@ function NavBar() {
                       color: "white",
                       cursor: "pointer",
                       borderBottom: "1px solid #3A3A3E",
-                      backgroundColor: selectedIndex === index ? "#4B367C" : "#2A2A2E", // Surlignage
+                      backgroundColor:
+                        selectedIndex === index ? "#4B367C" : "#2A2A2E", // Surlignage
                     }}
                     onMouseEnter={(e) => {
-                      if (selectedIndex !== index) e.target.style.backgroundColor = "#4B367C";
+                      if (selectedIndex !== index)
+                        e.target.style.backgroundColor = "#4B367C";
                     }}
                     onMouseLeave={(e) => {
-                      if (selectedIndex !== index) e.target.style.backgroundColor = "#2A2A2E";
+                      if (selectedIndex !== index)
+                        e.target.style.backgroundColor = "#2A2A2E";
                     }}
                   >
-                    {streamer.name} ({streamer.status === "live" ? "En direct" : "Hors ligne"})
+                    {streamer.name} (
+                    {streamer.status === "live" ? "En direct" : "Hors ligne"})
                   </div>
                 ))}
               </div>
@@ -176,9 +190,7 @@ function NavBar() {
               </div>
             )}
           </div>
-          <Nav>
-            {/* Ajoute des liens ici si besoin */}
-          </Nav>
+          <Nav>{/* Ajoute des liens ici si besoin */}</Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>

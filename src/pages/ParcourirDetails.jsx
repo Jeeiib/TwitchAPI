@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 function ParcourirDetails() {
   const { gameId } = useParams();
+  console.log("Game ID:", gameId);
   const [streamers, setStreamers] = useState([]);
   const [gameName, setGameName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -61,6 +62,7 @@ function ParcourirDetails() {
     };
     fetchInitialData();
   }, [gameId]);
+
 
   const loadMoreStreamers = async () => {
     if (!hasMore || loading) {
