@@ -166,8 +166,7 @@ function NavBar() {
                         e.target.style.backgroundColor = "#2A2A2E";
                     }}
                   >
-                    {streamer.name} (
-                    {streamer.status === "live" ? "En direct" : "Hors ligne"})
+                    {streamer.name} 
                   </div>
                 ))}
               </div>
