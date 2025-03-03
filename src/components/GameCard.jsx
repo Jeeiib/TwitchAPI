@@ -18,18 +18,18 @@ function GameCard({ name, imageUrl, viewers, small, categories, gameId }) {
     textDecoration: "none", 
   };
 
-  const hoverStyle = {
-    ":hover": {
-      transform: "translateY(-5px)",
-      boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
-    },
-  };
+  // const hoverStyle = {
+  //   ":hover": {
+  //     transform: "translateY(-5px)",
+  //     boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+  //   },
+  // };
 
   return (
     <Link to={`/parcourir/${gameId}`} style={{ textDecoration: "none" }}> {/* Lien vers la page détails */}
     <Card 
       className={small ? "h-100 small-card" : "h-100"} 
-      style={{...cardStyle, ...hoverStyle}}
+      style={{...cardStyle}}
     >
       <Card.Img 
         variant="top" 
